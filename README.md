@@ -1,2 +1,4 @@
 # NLP_project
-NLP Project (UNKNOWN)
+School Project
+MSc Data & Web Science, Aristotle University of Thessaloniki (AUTH)
+Course: Text Mining and Natural Language Processing
