@@ -83,7 +83,7 @@ print(me.screen_name)
 #####################################################################
 #   Query search
 #####################################################################
-query = "#καραντινα"
+query = "#Εμβολιο"
 df = pd.DataFrame()
 for i, status in enumerate(tweepy.Cursor(api.search, q=query)
                                  .items(50)):
@@ -95,4 +95,4 @@ for i, status in enumerate(tweepy.Cursor(api.search, q=query)
 
 print(df.head(50))
 
-df.to_csv(r'καραντινα.csv', index=False)
+df.to_csv(r'Data\Εμβολιο.csv', index=False)
