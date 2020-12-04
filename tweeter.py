@@ -14,16 +14,12 @@ consumer_secret = 'xOhpCUMraZfGOEG21dAg3nFBWoSTgD4Xp0EvaiM2uA5aaIjYRJ'
 callback_uri = 'oob'  # typically https://..././../..
 auth = tweepy.OAuthHandler(comsumer_key, consumer_secret, callback_uri)
 redirect_url = auth.get_authorization_url()
-#   print(redirect_url)
 webbrowser.open(redirect_url)
 user_pin_input = input("What's the pin value ?")
-#   user_pin_input
 auth.get_access_token(user_pin_input)  # this gives the access keys for that
 #                           particular user. These access keys dont change
-#   print(auth.access_token, auth.access_token_secret)
-
-api = tweepy.API(auth, wait_on_rate_limit=True)  # wait_on_rate_limit to not get banned! Wait for limit to end and
-# then continue!
+api = tweepy.API(auth, wait_on_rate_limit=True)  # wait_on_rate_limit to not
+# get banned! Wait for limit to end and then continue!
 me = api.me()
 print(me.screen_name)
 
@@ -83,16 +79,15 @@ print(me.screen_name)
 #####################################################################
 #   Query search
 #####################################################################
-query = "#Εμβολιο"
+query = "#covid"
 df = pd.DataFrame()
 for i, status in enumerate(tweepy.Cursor(api.search, q=query)
-                                 .items(50)):
-    # print(i, status.author.screen_name, status.text, "\n")
+                                 .items(5000)):
     new_row = pd.DataFrame({'Id': [i],
                             'User': [status.author.screen_name],
                             'Text': [status.text]})
     df = df.append(new_row)
 
-print(df.head(50))
+print(df.head(100))
 
-df.to_csv(r'Data\Εμβολιο.csv', index=False)
+df.to_csv(r'Data\covid.csv', index=False)
