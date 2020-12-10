@@ -79,7 +79,7 @@ print(me.screen_name)
 #####################################################################
 #   Query search
 #####################################################################
-query = "#covid"
+query = "#καραντινα"
 df = pd.DataFrame()
 for i, status in enumerate(tweepy.Cursor(api.search, q=query)
                                  .items(5000)):
@@ -90,4 +90,4 @@ for i, status in enumerate(tweepy.Cursor(api.search, q=query)
 
 print(df.head(100))
 
-df.to_csv(r'Data\covid.csv', index=False)
+df.to_csv(r'Data\καραντινα_20201210.csv', index=False)
