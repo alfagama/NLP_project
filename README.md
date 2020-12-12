@@ -30,6 +30,6 @@ e.g. In "vaccine.csv": *"25,dinah_wise,"RT @iCyclone: BAM! We've got a #vaccine.
 - Vaccine release to UK
 - Vaccine release to USA (expected in a week 15-20/12/20)
 - ... (Something major that will happen soon! BEWARE!! #spooky)
-3. ?
+3. Most common bi-grams / tri-grams / etc... in the covid posts
 4. ?
 5. ...
