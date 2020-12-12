@@ -79,9 +79,14 @@ print(me.screen_name)
 #####################################################################
 #   Query search
 #####################################################################
-query = "#vaccine"
+query = "#coronavirus"
 df = pd.DataFrame()
-for i, status in enumerate(tweepy.Cursor(api.search, q=query)
+for i, status in enumerate(tweepy.Cursor(api.search,
+                                         q=query,
+                                         # since="2020-01-01",
+                                         # until="2020-04-04",
+                                         # lang="gr"
+                                         )
                                  .items(5000)):
     new_row = pd.DataFrame({'Id': [i],
                             'User': [status.author.screen_name],
@@ -90,4 +95,4 @@ for i, status in enumerate(tweepy.Cursor(api.search, q=query)
 
 print(df.head(100))
 
-df.to_csv(r'Data\vaccine_20201212.csv', index=False)
+df.to_csv(r'Data\coronavirus_gr_20201212.csv', index=False)
