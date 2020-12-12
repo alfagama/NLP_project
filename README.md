@@ -27,3 +27,6 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 - Vaccine release to UK
 - Vaccine release to USA (expected in a week 15-20/12/20)
 - ... (Something major that will happen soon! BEWARE!! #spooky)
+3. ?
+4. ?
+5. ...
