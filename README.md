@@ -14,3 +14,19 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 ## Evaluation measure:
 - Unsupervised ML on data retrieved from Twitter
 - Sentiment Analysis
+
+----------------------------------------------------
+
+## Ideas
+1. Flow of positive/negative/neutral tweets from 10/12/20 ~= 24/01/20 to subjects:
+- covid / coronavirus
+- quarantine
+- vaccine
+2. Flow chart between different periods of interest:
+- Vaccine announcement
+- Vaccine release to UK
+- Vaccine release to USA (expected in a week 15-20/12/20)
+- ... (Something major that will happen soon! BEWARE!! #spooky)
+3. ?
+4. ?
+5. ...
