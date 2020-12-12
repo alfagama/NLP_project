@@ -14,3 +14,12 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 ## Evaluation measure:
 - Unsupervised ML on data retrieved from Twitter
 - Sentiment Analysis
+
+----------------------------------------------------
+
+## Ideas
+1. Flow of positive/negative/neutral tweets from 10/12/20 ~= 24/01/20 to subjects:
+- covid / coronavirus
+- quarantine
+- vaccine
+2. ??
