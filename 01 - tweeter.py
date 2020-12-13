@@ -86,6 +86,7 @@ for i, status in enumerate(tweepy.Cursor(api.search,
                                  .items(500)):
     new_row = pd.DataFrame({'Num': [i],
                             'Id': [status.id],
+                            'Created': [status.created_at],
                             'User': [status.author.screen_name],
                             'Text': [status.text],
                             'Likes': [status.favorite_count],
