@@ -4,13 +4,13 @@ from pymongo.errors import DuplicateKeyError
 import tweepy
 import time
 
-query = "#coronavirus"
+query = "#coronavirus AND #covid"
 
 #MongoDB
 uri = "mongodb://localhost:27017/"
 client = pymongo.MongoClient(uri)
 db = client.TwitterCovidDB
-CollectionName = 'temp'
+CollectionName = 'covid2'
 collection = db[CollectionName]
 
 
@@ -23,6 +23,7 @@ def loadToDB(tweet):
 
         collection.insert_one(tweet._json)
         print('[Insert]', tweet._json['id'], 'for query', query, '[' + str(collection.estimated_document_count()) + ']')
+        print(tweet._json['full_text'])
 
     except DuplicateKeyError as e:
         print('Duplicate tweet detected', tweet._json['id'])
@@ -30,16 +31,16 @@ def loadToDB(tweet):
 
 
 tweets = tweepy.Cursor(api.search,
-              q=query,
-              lang="en").items()
+              q=query + " -filter:retweets",
+              lang="en", tweet_mode='extended').items(50)
 
-i = 0
+#i = 0
 while True:
     try:
         tweet = tweets.next()
-        print(i)
-        i += 1
-        #loadToDB(tweets)
+        #print(i)
+        #i += 1
+        loadToDB(tweet)
     except tweepy.TweepError:
         time.sleep(60 * 15)
         continue
@@ -47,11 +48,7 @@ while True:
         break
 
 
-'''i =0
-for tweet in tweets.items():
-    print(i)
-    i+=1
-    #loadToDB(tweets)'''
+
 
 
 
