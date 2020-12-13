@@ -82,17 +82,24 @@ print(me.screen_name)
 query = "#coronavirus"
 df = pd.DataFrame()
 for i, status in enumerate(tweepy.Cursor(api.search,
-                                         q=query,
-                                         # since="2020-01-01",
-                                         # until="2020-04-04",
-                                         # lang="gr"
-                                         )
-                                 .items(5000)):
-    new_row = pd.DataFrame({'Id': [i],
+                                         q=query)
+                                 .items(500)):
+    new_row = pd.DataFrame({'Num': [i],
+                            'Id': [status.id],
                             'User': [status.author.screen_name],
-                            'Text': [status.text]})
+                            'Text': [status.text],
+                            'Likes': [status.favorite_count],
+                            'Retweets': [status.retweet_count],
+                            'Geolocation': [status.geo],
+                            'Location': [status.user.location],
+                            'Language': [status.lang],
+                            'User_Id': [status.user.id],
+                            'User_Name': [status.user.name],
+                            'User_Followers': [status.user.followers_count],
+                            'User_Following': [status.user.friends_count]
+                            })
     df = df.append(new_row)
 
 print(df.head(100))
 
-df.to_csv(r'Data\coronavirus_gr_20201212.csv', index=False)
+df.to_csv(r'Data\coronavirus_20201213.csv', index=False)
