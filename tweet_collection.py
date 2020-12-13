@@ -4,7 +4,7 @@ from pymongo.errors import DuplicateKeyError
 import tweepy
 import time
 
-query = "#coronavirus AND #covid"
+query = "#coronavirus OR #covid OR #covid19"
 
 #MongoDB
 uri = "mongodb://localhost:27017/"
