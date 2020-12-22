@@ -33,7 +33,7 @@ def preprocessing(txt):
     tokens_no_specials = [re.sub('[^A-Za-z0-9]+', '', i) for i in tokens_only_letters]
 
     #   We removed repeated words. For example, sooooo terrified was converted to so terrified.
-    tokens_no_dragging = tokens_no_specials
+    tokens_no_dragging = tokens_no_specials # (in progress ... )
 
     #   We removed stop_words
     tokens_no_stop_words = [w for w in tokens_no_dragging if not w in stop_words]
