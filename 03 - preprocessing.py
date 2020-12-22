@@ -1,25 +1,6 @@
-###################################################
-#   Pre-Processing
-###################################################
-#
-# 1. We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from
-# the messages because the hashtag symbols or the URLs did not contribute to the message
-# analysis.
-# 2. We removed all non-English characters (non-ASCII characters) because the study focused
-# on the analysis of messages in English.
-# 3. We removed repeated words. For example, sooooo terrified was converted to so terrified.
-# 4. We removed special characters, punctuations, and numbers from the dataset as they did
-# not help with detecting the profanity comments.
-# ola mikra
-# tokenize
-# stop words remove
-###################################################
-
-
-import pymongo
+import re
 from pymongo import MongoClient
 from nltk.corpus import stopwords
-import re
 from nltk.stem.snowball import SnowballStemmer
 
 connection = MongoClient("mongodb://localhost:27017/")
@@ -49,7 +30,7 @@ def preprocessing(txt):
     tokens_only_letters = list(filter(lambda ele: re.search("[a-zA-Z\s]+", ele) is not None, tokens_basic_pre))
 
     #   We removed repeated words. For example, sooooo terrified was converted to so terrified.
-    tokens_no_dragging = tokens_only_letters
+    tokens_no_dragging = tokens_only_letters # in progress ...
 
     #   We removed stop_words
     tokens_no_stop_words = [w for w in tokens_no_dragging if not w in stop_words]
@@ -85,10 +66,10 @@ for collection in collections:
     if collection == 'vaccine_test':
         for tweet in tweets:
             text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
+            tokens, preprocessed_tokens = preprocessing(text)
+            update_preprocessed_column(tokens, preprocessed_tokens)
             print("Before: ")
             print(text)
             print("After: ")
-            tokens, preprocessed_tokens = preprocessing(text)
-            update_preprocessed_column(tokens, preprocessed_tokens)
             print(tokens)
             print(preprocessed_tokens)
