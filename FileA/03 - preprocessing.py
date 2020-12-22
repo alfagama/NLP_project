@@ -3,7 +3,7 @@ import pymongo
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
-from data import *
+from FileA.data import *
 
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
