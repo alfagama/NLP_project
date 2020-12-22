@@ -48,8 +48,7 @@ def preprocessing(txt):
 
     #   We removed stop_words
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
-    tokens_no_stop_words = [w for w in tokens_no_dragging
-                            if not w in final_stop_words]
+    tokens_no_stop_words = [w for w in tokens_no_dragging if w not in final_stop_words]
 
     # return a list of tokens without preprocessing, a list of tokens after all preprocessing pipeline
     #   and a string of full text preprocessed
