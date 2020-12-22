@@ -1,3 +1,4 @@
+import itertools
 import re
 import pymongo
 from pymongo import MongoClient
@@ -42,21 +43,24 @@ def preprocessing(txt):
     tokens_no_specials = [re.sub('[^A-Za-z0-9]+', '', i) for i in tokens_only_letters]
 
     #   We removed repeated words. For example, sooooo terrified was converted to so terrified.
-    tokens_no_dragging = tokens_no_specials  # (in progress ... )
+    tokens_no_dragging = tokens_no_specials
+    # tokens_no_dragging = ''.join(''.join(s)[:2] for _, s in itertools.groupby(tokens_no_specials))
 
     #   We removed stop_words
-    tokens_no_stop_words = [w for w in tokens_no_dragging if not w in stop_words]
+    final_stop_words = [x for x in stop_words if x not in ok_stop_words]
+    tokens_no_stop_words = [w for w in tokens_no_dragging
+                            if not w in final_stop_words]
 
     # return a list of tokens without preprocessing, a list of tokens after all preprocessing pipeline
     #   and a string of full text preprocessed
     return tokens, tokens_no_stop_words, TreebankWordDetokenizer().detokenize(tokens_no_stop_words)
 
 
-
-def update_preprocessed_column(tokens, clean_tokens, text):
+def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
     """
-    :param tokens: import tokenized full_text to import in a new column in db
-    :param clean_tokens: import tokenized & cleaned full_text to import in a new column in db
+    :param f_tokens: tokenized full_text to import in a new column in db
+    :param clean_tokens: tokenized & cleaned full_text to import in a new column in db
+    :param clean_text: cleaned full_text to import in a new column in db
     :return: None
     """
     db[collection].update(
@@ -65,9 +69,9 @@ def update_preprocessed_column(tokens, clean_tokens, text):
         },
         {
             "$set": {
-                "tokens": tokens,
+                "tokens": f_tokens,
                 "tokens_preprocessed": clean_tokens,
-                "text_preprocessed": text
+                "text_preprocessed": clean_text
             }
         }
     )
