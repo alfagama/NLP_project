@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from FileA.data import *
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
@@ -17,7 +18,7 @@ stemmer = SnowballStemmer("english")
 def preprocessing(txt):
     """
     :param txt: (string) for preprocessing
-    :return: (string) preprocessed
+    :return: (list) tokens, (list) tokens preprocessed, (string) text preprocessed
     """
     #   We tokenize the tweet
     tokens = txt.split()
@@ -46,12 +47,13 @@ def preprocessing(txt):
     #   We removed stop_words
     tokens_no_stop_words = [w for w in tokens_no_dragging if not w in stop_words]
 
-    # return a list of tokens without preprocessing and a list of tokens after all preprocessing pipeline
-    return tokens, tokens_no_stop_words
+    # return a list of tokens without preprocessing, a list of tokens after all preprocessing pipeline
+    #   and a string of full text preprocessed
+    return tokens, tokens_no_stop_words, TreebankWordDetokenizer().detokenize(tokens_no_stop_words)
 
 
 
-def update_preprocessed_column(tokens, clean_tokens):
+def update_preprocessed_column(tokens, clean_tokens, text):
     """
     :param tokens: import tokenized full_text to import in a new column in db
     :param clean_tokens: import tokenized & cleaned full_text to import in a new column in db
@@ -63,8 +65,9 @@ def update_preprocessed_column(tokens, clean_tokens):
         },
         {
             "$set": {
-                "text_tokenized": tokens,
-                "text_tokenized_without_stopwords": clean_tokens
+                "tokens": tokens,
+                "tokens_preprocessed": clean_tokens,
+                "text_preprocessed": text
             }
         }
     )
@@ -78,7 +81,7 @@ for collection in collections:
             print("Before: ")
             print(text)
             print("After: ")
-            tokens, preprocessed_tokens = preprocessing(text)
-            update_preprocessed_column(tokens, preprocessed_tokens)
+            tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
+            update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text)
             print(tokens)
             print(preprocessed_tokens)
