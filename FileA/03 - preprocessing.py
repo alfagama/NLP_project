@@ -57,7 +57,7 @@ def update_preprocessed_column(tokens, clean_tokens, text):
     """
     :param tokens: import tokenized full_text to import in a new column in db
     :param clean_tokens: import tokenized & cleaned full_text to import in a new column in db
-    :return: Nones
+    :return: None
     """
     db[collection].update(
         {
