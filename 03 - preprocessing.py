@@ -1,6 +1,7 @@
-import re
+import pymongo
 from pymongo import MongoClient
 from nltk.corpus import stopwords
+import re
 from nltk.stem.snowball import SnowballStemmer
 
 connection = MongoClient("mongodb://localhost:27017/")
@@ -25,12 +26,14 @@ def preprocessing(txt):
                         if not token.startswith('#') if not token.startswith('@')]
 
     #   We removed all non-English characters (non-ASCII characters) because the study focused on the analysis of
-    #       messages in English.
-    #   We also removed special characters, punctuations, and numbers.
+    #       messages in English. (and numbers.)
     tokens_only_letters = list(filter(lambda ele: re.search("[a-zA-Z\s]+", ele) is not None, tokens_basic_pre))
 
+    #   We also removed special characters, punctuations.
+    tokens_no_specials = [re.sub('[^A-Za-z0-9]+', '', i) for i in tokens_only_letters]
+
     #   We removed repeated words. For example, sooooo terrified was converted to so terrified.
-    tokens_no_dragging = tokens_only_letters # in progress ...
+    tokens_no_dragging = tokens_no_specials
 
     #   We removed stop_words
     tokens_no_stop_words = [w for w in tokens_no_dragging if not w in stop_words]
@@ -66,10 +69,10 @@ for collection in collections:
     if collection == 'vaccine_test':
         for tweet in tweets:
             text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
-            tokens, preprocessed_tokens = preprocessing(text)
-            update_preprocessed_column(tokens, preprocessed_tokens)
             print("Before: ")
             print(text)
             print("After: ")
+            tokens, preprocessed_tokens = preprocessing(text)
+            update_preprocessed_column(tokens, preprocessed_tokens)
             print(tokens)
             print(preprocessed_tokens)
