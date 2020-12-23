@@ -1,11 +1,12 @@
-import itertools
-import re
-import pymongo
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from FileA.data import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+from nltk.stem import PorterStemmer
+# import nltk
+# from nltk.stem import WordNetLemmatizer
+# nltk.download('wordnet')
 
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
@@ -50,9 +51,17 @@ def preprocessing(txt):
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
     tokens_no_stop_words = [w for w in tokens_no_dragging if w not in final_stop_words]
 
+    #   We used WordNetLemmatizer from the nltk library as a final step
+    # lemmatizer = WordNetLemmatizer()
+    # tokens_lemmatized = [lemmatizer.lemmatize(l) for l in tokens_no_stop_words]
+
+    #   We used PorterStemmer from the nltk library as a final step
+    ps = PorterStemmer()
+    tokens_stemmed = [ps.stem(w) for w in tokens_no_stop_words]
+
     # return a list of tokens without preprocessing, a list of tokens after all preprocessing pipeline
     #   and a string of full text preprocessed
-    return tokens, tokens_no_stop_words, TreebankWordDetokenizer().detokenize(tokens_no_stop_words)
+    return tokens, tokens_stemmed, TreebankWordDetokenizer().detokenize(tokens_stemmed)
 
 
 def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
