@@ -73,7 +73,7 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
     """
     db[collection].update(
         {
-            "full_text": tweet["full_text"]
+            "id": tweet["id"]
         },
         {
             "$set": {
