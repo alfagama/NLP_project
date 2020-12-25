@@ -46,10 +46,30 @@ ok_stop_words = {'not'
                  }
 
 # Positive Emoticons
-emoticons_pos = {':-)', ':)', ';)', ':o)', ':]', ':3', ':c)', ':>', '=]', '8)', '=)', ':}', ':^)', ':-D', ':D', '8-D',
-                 '8D', 'x-D', 'xD', 'X-D', 'XD', '=-D', '=D', '=-3', '=3', ':-))', ":'-)", ":')", ':*', ':^*', '>:P',
-                 ':-P', ':P', 'X-P', 'x-p', 'xp', 'XP', ':-p', ':p', '=p', ':-b', ':b', '>:)', '>;)', '>:-)', '<3'}
+emoticons_pos_happy = {':-)', ':)', ';)', ':o)', ':]', ':3', ':c)', ':>', '=]', '8)', '=)', ':}', ':^)', ':-D', ':D',
+                       '8-D', '8D', '=-3', '=3', ':-))', ":'-)", ":')"}
+emoticons_pos_laugh = {'x-D', 'xD', 'X-D', 'XD', '=-D', '=D'}
+emoticons_pos_kiss = {':*', ':^*'}
+emoticons_pos_playfull = {'>:P', ':-P', ':P', 'X-P', 'x-p', 'xp', 'XP', ':-p', ':p', '=p', ':-b', ':b', '>:)', '>;)',
+                          '>:-)'}
+emoticons_pos_love = {'<3'}
 
 # Negative Emoticons
-emoticons_neg = {':L', ':-/', '>:/', ':S', '>:[', ':@', ':-(', ':[', ':-||', '=L', ':<', ':-[', ':-<', '=\\', '=/',
-                 '>:(', ':(', '>.<', ":'-(", ":'(", ':\\', ':-c', ':c', ':{', '>:\\', ';('}
+emoticons_neg_sad = {':L', ':-/', '>:/', ':S', '>:[', ':-(', ':[', ':-||', '=L', ':<', ':-[', ':-<', '=\\', '=/',
+                     '>:(', ':(', '>.<'}
+emoticons_neg_angry = {':@'}
+emoticons_neg_cry = {":'-(", ":'(", ':\\', ':-c', ':c', ':{', '>:\\', ';('}
+
+def emoticon_translation(word):
+    newword = ''
+    if word in emoticons_pos_happy:         newword = 'happy'
+    elif word in emoticons_pos_laugh:       newword = 'laugh'
+    elif word in emoticons_pos_kiss:        newword = 'kiss'
+    elif word in emoticons_pos_playfull:    newword = 'playfull'
+    elif word in emoticons_pos_love:        newword = 'love'
+    elif word in emoticons_neg_sad:         newword = 'sad'
+    elif word in emoticons_neg_angry:       newword = 'angry'
+    elif word in emoticons_neg_cry:         newword = 'cry'
+    # if newword != '':
+    #    print(':)')
+    return newword
