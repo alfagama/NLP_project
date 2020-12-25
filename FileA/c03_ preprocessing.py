@@ -84,7 +84,9 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
                 "tokens": f_tokens,
                 "tokens_preprocessed": clean_tokens,
                 "text_preprocessed": clean_text,
-                "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common()
+                "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common(),
+                "trigrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:])).most_common(),
+                "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common()
             }
         }
     )
