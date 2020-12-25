@@ -25,5 +25,4 @@ for collection in collections:
                     continue
 
 print(dict(sorted(fourgram_dictionary.items(), key=lambda item: item[1], reverse=True)))
-
 # print(list(islice(fourgram_dictionary, 10)))

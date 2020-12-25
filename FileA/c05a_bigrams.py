@@ -22,4 +22,3 @@ for collection in collections:
                     continue
 
 print(dict(sorted(bigram_dictionary.items(), key=lambda item: item[1], reverse=True)))
-

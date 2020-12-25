@@ -22,7 +22,6 @@ for collection in collections:
                     continue
 
 print(dict(sorted(trigram_dictionary.items(), key=lambda item: item[1], reverse=True)))
-
 # lista = list(dict(sorted(trigram_dictionary.items(), key=lambda item: item[1], reverse=True)))
 # print(lista)
 # for x in range(0, 5):
