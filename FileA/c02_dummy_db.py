@@ -2,6 +2,7 @@ import sys
 import pymongo
 from pymongo import MongoClient
 
+#####################################################################
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
 
@@ -10,13 +11,17 @@ client = pymongo.MongoClient(uri)
 CollectionName = 'vaccine_test'
 collection_test = db[CollectionName]
 
+#####################################################################
+
 
 def load_to_db(tweet_to_load):
     collection_test.insert_one(tweet_to_load)
 
 
+#####################################################################
 collections = db.collection_names()
 
+#####################################################################
 for collection in collections:
     if collection == 'vaccine':
         tweets = db[collection].find()
@@ -25,5 +30,4 @@ for collection in collections:
         break
     else:
         continue
-
-
+#####################################################################

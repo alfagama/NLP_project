@@ -2,11 +2,13 @@ from pymongo import MongoClient
 from datetime import datetime
 from collections import Counter
 
+#####################################################################
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
 
 collections = db.collection_names()
 
+#####################################################################
 all_dates = []
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
@@ -17,8 +19,10 @@ for collection in collections:
             all_dates.append(new_datetime)
             print(new_datetime)
 
+#####################################################################
 # unique_dates = Counter(all_dates).keys()
 # print("No of unique items in the list are:", len(unique_dates))
 
 unique_dates_frequency = Counter(all_dates)
 print(unique_dates_frequency.items())
+#####################################################################

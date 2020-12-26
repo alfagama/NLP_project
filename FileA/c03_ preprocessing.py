@@ -9,13 +9,17 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 nltk.download('wordnet')
 
+#####################################################################
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
 
 collections = db.collection_names()
 
+#####################################################################
 stop_words = set(stopwords.words('english'))
 stemmer = SnowballStemmer("english")
+
+#####################################################################
 
 
 def preprocessing(txt):
@@ -68,6 +72,9 @@ def preprocessing(txt):
     return tokens, tokens_lemmatized, TreebankWordDetokenizer().detokenize(tokens_lemmatized)
 
 
+#####################################################################
+
+
 def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
     """
     :param f_tokens: tokenized full_text to import in a new column in db
@@ -86,12 +93,16 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
                 "text_preprocessed": clean_text,
                 "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common(),
                 "trigrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:])).most_common(),
-                "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common()
+                "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common(),
+                "bigrams_full": Counter(zip(f_tokens, f_tokens[1:])).most_common(),
+                "trigrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:])).most_common(),
+                "fourgrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:], f_tokens[3:])).most_common()
             }
         }
     )
 
 
+#####################################################################
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
     if collection == 'vaccine_test':
@@ -104,3 +115,4 @@ for collection in collections:
             update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text)
             # print(tokens)
             # print(preprocessed_tokens)
+#####################################################################
