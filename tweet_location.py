@@ -1,14 +1,7 @@
 import pymongo
 import geograpy
 import re
-
-
-#MongoDB
-uri = "mongodb://localhost:27017/"
-client = pymongo.MongoClient(uri)
-db = client.TwitterDB
-CollectionName = 'covidtemp'
-collection = db[CollectionName]
+from mongo import *
 
 
 def recognizeSpecificCountries(text):
@@ -147,7 +140,7 @@ def update_tweet_location(tweet, location):
     )
 
 
-
+collection = db['covidtemp']
 total_tweets = collection.estimated_document_count()
 tweets_loc_found_count = 0
 tweet_index = 0
