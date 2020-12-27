@@ -1,14 +1,7 @@
 import pymongo
 import geograpy
 import re
-
-
-#MongoDB
-uri = "mongodb://localhost:27017/"
-client = pymongo.MongoClient(uri)
-db = client.TwitterDB
-CollectionName = 'covidtemp'
-collection = db[CollectionName]
+from mongo_db import *
 
 
 def recognizeSpecificCountries(text):
@@ -18,7 +11,6 @@ def recognizeSpecificCountries(text):
     :return:
     '''
 
-    #what happens is a tweet has more than one countries e.g. 'us | uk | eu' !!!!!!!!!!!!!!!!!!!!!!!!! todo
     text = text.lower()
     text_clean = re.sub('[^a-zA-Z\s]+', '', text)  # remove special characters, keep only the letters
     tokens = text_clean.split() #tokenize
@@ -35,6 +27,9 @@ def recognizeSpecificCountries(text):
     if 'u.s.' in tokens:
         return 'United States'
 
+    if 'America' in tokens:
+        return 'United States'
+
     if 'new york city' in tokens:
         return 'United States'
 
@@ -42,6 +37,9 @@ def recognizeSpecificCountries(text):
         return 'United States'
 
     if 'ny' in tokens:
+        return 'United States'
+
+    if 'texas' in tokens:
         return 'United States'
 
     if 'uk' in tokens:
@@ -59,10 +57,26 @@ def recognizeSpecificCountries(text):
     if 'au' in tokens:
         return 'Australia'
 
+    if 'toronto' in tokens:
+        return 'Canada'
+
+    if 'melbourne' in tokens:
+        return 'Australia'
+
+    if 'philadelphia' in tokens:
+        return 'United States'
+
     return None
 
 
 def getTweetLocation(tweet):
+    '''
+    Detects tweet's country based on tweet's information. If tweet has 'place' declared, we extract 'country' from it.
+    Else, we check user's location and use geograpy. So, if country is declared we extract it, else if city is declared
+    we assigned it to the country it belongs.
+    :param tweet: tweet
+    :return:
+    '''
     place = tweet['place']
     # geo = tweet['geo'] #no 'geo' found in tweets
     # coordinates = tweet['coordinates'] #no 'coordinates' found in tweets
@@ -75,7 +89,7 @@ def getTweetLocation(tweet):
 
     #if no 'place' exists in tweet, we try to get location info from user's location
     user_loc = tweet['user']['location']  # get user's location
-    # print(user_loc)
+    #print(user_loc)
 
     #if user's location is empty, return None
     if user_loc == '':
@@ -98,7 +112,13 @@ def getTweetLocation(tweet):
         #print('No country found\n')
         return None
 
-    #geograpy returns a list with all possible counries, we take the first one !!!!! should we?? should we not???
+    #geograpy returns a list with all possible counries, we take the first one !!!!!
+    #If the input text contains both city and country, then the first element
+    # of "countries" list is always the country contained in text
+    # e.g. Input: 'London'
+    #      Output: countries=['United Kingdom', 'United States', 'Canada']
+    #      Input:  'London, Canada'
+    #      Output: countries=['Canada', 'Spain', 'United Kingdom', 'United States']
     return places.countries[0]
 
 
@@ -108,7 +128,7 @@ def update_tweet_location(tweet, location):
     :param location: tweet's location to import in a new column in db
     :return: None
     """
-    collection.update(
+    collection.update_one(
         {
             'id': tweet['id']
         },
@@ -120,7 +140,7 @@ def update_tweet_location(tweet, location):
     )
 
 
-
+collection = db['covidtemp']
 total_tweets = collection.estimated_document_count()
 tweets_loc_found_count = 0
 tweet_index = 0
@@ -138,7 +158,6 @@ for tweet in tweets:
     print('[Country Added]', tweet['id'], '[' + str(tweet_index) + '/' + str(total_tweets) + ']')
 
 
-print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweets, ' tweets (total)')
+print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweets, ' total tweets')
 print('Percentage of tweets with country: ', tweets_loc_found_count/total_tweets *100)
-
 
