@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from FileA.data import *
-# from tweet_location import *
+from tweet_location import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.stem import PorterStemmer
 from datetime import datetime
@@ -75,7 +75,7 @@ def preprocessing(text):
 #####################################################################
 
 
-def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date):
+def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date, country):
     """
     :param f_tokens: tokenized full_text to import in a new column in db
     :param clean_tokens: tokenized & cleaned full_text to import in a new column in db
@@ -98,6 +98,7 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date):
             {
                 "$set": {
                     "tweet_date": date,
+                    "location": country,
                     "tokens": f_tokens,
                     "tokens_preprocessed": clean_tokens,
                     "text_preprocessed": clean_text,
@@ -113,7 +114,12 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date):
 
 
 #####################################################################
+#   stuff for print at the end!
 all_dates = []
+total_tweets = collection.estimated_document_count()
+tweets_loc_found_count = 0
+tweet_index = 0
+
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
     if collection == 'vaccine_test':
@@ -121,16 +127,30 @@ for collection in collections:
             #   update Date
             date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
             new_datetime = datetime.strftime(datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d')
+            #   update location
+            tweet_country = getTweetLocation(tweet)
             #   preprocessed data + ngrams
             text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
             tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
-            update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text, new_datetime)
+            update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text, new_datetime, tweet_country)
+            # prints for data
             print("Before: ")
             print(text)
             print("After: ")
             print(tokens)
             print(preprocessed_tokens)
+            # prints for date
             all_dates.append(new_datetime)
+            # prints for location
+            tweet_index += 1
+            if tweet_country:
+                tweets_loc_found_count += 1
+
 unique_dates_frequency = Counter(all_dates)
 print(unique_dates_frequency.items())
+
+
+print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweets, ' total tweets')
+print('Percentage of tweets with country: ', tweets_loc_found_count/total_tweets *100)
+
 #####################################################################
