@@ -97,6 +97,8 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date, country
             },
             {
                 "$set": {
+                    # "word2vec": aaa,
+                    # "tfidf": bbb,
                     "tweet_date": date,
                     "location": country,
                     "tokens": f_tokens,
