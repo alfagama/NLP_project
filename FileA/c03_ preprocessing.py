@@ -82,15 +82,13 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date):
     :param clean_text: cleaned full_text to import in a new column in db
     :return: None
     """
-    var = 1
     if clean_text == '':
         #   delete
-        # db[collection].delete(
-        #     {
-        #         "id": tweet["id"]
-        #     }
-        # )
-        var = 1
+        db[collection].delete_one(
+            {
+                "id": tweet["id"]
+            }
+        )
     else:
         #   update new columns
         db[collection].update(
