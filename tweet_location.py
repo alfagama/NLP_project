@@ -1,7 +1,7 @@
 import pymongo
 import geograpy
 import re
-from mongo import *
+from mongo_db import *
 
 
 def recognizeSpecificCountries(text):
