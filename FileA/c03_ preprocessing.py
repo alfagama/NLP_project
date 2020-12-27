@@ -5,6 +5,7 @@ from FileA.data import *
 # from tweet_location import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.stem import PorterStemmer
+from datetime import datetime
 from collections import Counter
 from nltk import pos_tag
 import nltk
@@ -74,7 +75,7 @@ def preprocessing(text):
 #####################################################################
 
 
-def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
+def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date):
     """
     :param f_tokens: tokenized full_text to import in a new column in db
     :param clean_tokens: tokenized & cleaned full_text to import in a new column in db
@@ -98,6 +99,7 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
             },
             {
                 "$set": {
+                    "tweet_date": date,
                     "tokens": f_tokens,
                     "tokens_preprocessed": clean_tokens,
                     "text_preprocessed": clean_text,
@@ -113,16 +115,24 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
 
 
 #####################################################################
+all_dates = []
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
     if collection == 'vaccine_test':
         for tweet in tweets:
+            #   update Date
+            date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
+            new_datetime = datetime.strftime(datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d')
+            #   preprocessed data + ngrams
             text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
+            tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
+            update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text, new_datetime)
             print("Before: ")
             print(text)
             print("After: ")
-            tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
-            update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text)
             print(tokens)
             print(preprocessed_tokens)
+            all_dates.append(new_datetime)
+unique_dates_frequency = Counter(all_dates)
+print(unique_dates_frequency.items())
 #####################################################################
