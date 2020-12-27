@@ -8,8 +8,8 @@ def get_contractions(text):
         "doesn't": "does not", "don't": "do not", "hadn't": "had not", "hadn't've": "had not have",
         "hasn't": "has not", "haven't": "have not", "he'd": "he would", "he'd've": "he would have", "he'll": "he will",
         "he'll've": "he will have", "he's": "he is", "how'd": "how did", "how'd'y": "how do you", "how'll": "how will",
-        "how's": "how is", "I'd": "I would", "I'd've": "I would have", "I'll": "I will", "I'll've": "I will have",
-        "I'm": "I am", "I've": "I have", "isn't": "is not", "it'd": "it would", "it'd've": "it would have",
+        "how's": "how is", "i'd": "i would", "i'd've": "i would have", "i'll": "i will", "i'll've": "i will have",
+        "i'm": "i am", "i've": "i have", "isn't": "is not", "it'd": "it would", "it'd've": "it would have",
         "it'll": "it will", "it'll've": "it will have", "it's": "it is", "let's": "let us", "ma'am": "madam",
         "mayn't": "may not", "might've": "might have", "mightn't": "might not", "mightn't've": "might not have",
         "must've": "must have", "mustn't": "must not", "mustn't've": "must not have", "needn't": "need not",
@@ -30,7 +30,8 @@ def get_contractions(text):
         "won't've": "will not have", "would've": "would have", "wouldn't": "would not", "wouldn't've": "would not have",
         "y'all": "you all", "y'all'd": "you all would", "y'alll'd've": "you all would have", "y'all're": "you all are",
         "y'all've": "you all have", "you'd": "you would", "you'd've": "you would have", "you'll": "you will",
-        "you'll've": "you will have", "you're": "you are", "you've": "you have"
+        "you'll've": "you will have", "you're": "you are", "you've": "you have", "isnt": "is not", " im ": " i am ",
+        " amp ": '', "&amp": ''
     }
 
     contraction_re = re.compile('(%s)' % '|'.join(contractions_dictionary.keys()))

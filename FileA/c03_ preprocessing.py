@@ -2,9 +2,11 @@ from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from FileA.data import *
+# from tweet_location import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.stem import PorterStemmer
 from collections import Counter
+from nltk import pos_tag
 import nltk
 from nltk.stem import WordNetLemmatizer
 nltk.download('wordnet')
@@ -22,22 +24,16 @@ stemmer = SnowballStemmer("english")
 #####################################################################
 
 
-def preprocessing(txt):
+def preprocessing(text):
     """
     :param txt: (string) for preprocessing
     :return: (list) tokens, (list) tokens preprocessed, (string) text preprocessed
     """
-    #   We tokenize the tweet
-    tokens = txt.split()
-
     #   We set all words to lower-case
-    tokens_lower = [x.lower() for x in tokens]
+    text_lowered = text.lower()
 
-    #   We modified the contractions
-    tokens_no_contractions = [get_contractions(word) for word in tokens_lower]
-
-    #   We replaced emoticons with words that express similar feeling
-    tokens_no_empticons = [emoticon_translation(word) for word in tokens_no_contractions]
+    #   We modified the contractions & split it into tokens
+    tokens_no_contractions = [get_contractions(word) for word in text_lowered.split()]
 
     #   We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from the messages because the
     #       hashtag symbols or the URLs did not contribute to the message analysis.
@@ -48,20 +44,23 @@ def preprocessing(txt):
     #       messages in English. (and numbers.)
     tokens_only_letters = list(filter(lambda ele: re.search("[a-zA-Z\s]+", ele) is not None, tokens_basic_pre))
 
-    #   We also removed special characters, punctuations.
-    tokens_no_specials = [re.sub('[^A-Za-z0-9]+', '', i) for i in tokens_only_letters]
-
-    #   We removed repeated words. For example, sooooo terrified was converted to so terrified.
-    tokens_no_dragging = tokens_no_specials
-    # tokens_no_dragging = ''.join(''.join(s)[:2] for _, s in itertools.groupby(tokens_no_specials))
-
     #   We removed stop_words
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
-    tokens_no_stop_words = [w for w in tokens_no_dragging if w not in final_stop_words]
+    tokens_no_stop_words = [w for w in tokens_only_letters if w not in final_stop_words]
 
     #   We used WordNetLemmatizer from the nltk library as a final step
     lemmatizer = WordNetLemmatizer()
-    tokens_lemmatized = [lemmatizer.lemmatize(l) for l in tokens_no_stop_words]
+    # tokens_lemmatized = [lemmatizer.lemmatize(l) for l in tokens_no_stop_words]
+    #   We also decided to use pos_tagging to enhance our lemmatization model
+    tokens_lemmatized = []
+    for word, tag in pos_tag(tokens_no_stop_words):
+        if tag.startswith('NN'):
+            pos = 'n'
+        elif tag.startswith('VB'):
+            pos = 'v'
+        else:
+            pos = 'a'
+        tokens_lemmatized.append(lemmatizer.lemmatize(word, pos))
 
     #   We used PorterStemmer from the nltk library as a final step
     # ps = PorterStemmer()
@@ -69,7 +68,7 @@ def preprocessing(txt):
 
     # return a list of tokens without preprocessing, a list of tokens after all preprocessing pipeline
     #   and a string of full text preprocessed
-    return tokens, tokens_lemmatized, TreebankWordDetokenizer().detokenize(tokens_lemmatized)
+    return text.split(), tokens_lemmatized, TreebankWordDetokenizer().detokenize(tokens_lemmatized)
 
 
 #####################################################################
@@ -82,24 +81,35 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text):
     :param clean_text: cleaned full_text to import in a new column in db
     :return: None
     """
-    db[collection].update(
-        {
-            "id": tweet["id"]
-        },
-        {
-            "$set": {
-                "tokens": f_tokens,
-                "tokens_preprocessed": clean_tokens,
-                "text_preprocessed": clean_text,
-                "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common(),
-                "trigrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:])).most_common(),
-                "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common(),
-                "bigrams_full": Counter(zip(f_tokens, f_tokens[1:])).most_common(),
-                "trigrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:])).most_common(),
-                "fourgrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:], f_tokens[3:])).most_common()
+    var = 1
+    if clean_text == '':
+        #   delete
+        # db[collection].delete(
+        #     {
+        #         "id": tweet["id"]
+        #     }
+        # )
+        var = 1
+    else:
+        #   update new columns
+        db[collection].update(
+            {
+                "id": tweet["id"]
+            },
+            {
+                "$set": {
+                    "tokens": f_tokens,
+                    "tokens_preprocessed": clean_tokens,
+                    "text_preprocessed": clean_text,
+                    "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common(),
+                    "trigrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:])).most_common(),
+                    "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common(),
+                    "bigrams_full": Counter(zip(f_tokens, f_tokens[1:])).most_common(),
+                    "trigrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:])).most_common(),
+                    "fourgrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:], f_tokens[3:])).most_common()
+                }
             }
-        }
-    )
+        )
 
 
 #####################################################################
@@ -108,11 +118,11 @@ for collection in collections:
     if collection == 'vaccine_test':
         for tweet in tweets:
             text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
-            # print("Before: ")
-            # print(text)
-            # print("After: ")
+            print("Before: ")
+            print(text)
+            print("After: ")
             tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
             update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text)
-            # print(tokens)
-            # print(preprocessed_tokens)
+            print(tokens)
+            print(preprocessed_tokens)
 #####################################################################

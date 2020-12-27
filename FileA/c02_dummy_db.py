@@ -8,7 +8,7 @@ db = connection.TwitterDB
 
 uri = "mongodb://localhost:27017/"
 client = pymongo.MongoClient(uri)
-CollectionName = 'vaccine_test'
+CollectionName = 'vaccine_test3'
 collection_test = db[CollectionName]
 
 #####################################################################
