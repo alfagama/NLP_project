@@ -18,7 +18,7 @@ wordcloud = WordCloud(background_color="white", max_words=5000, contour_width=3,
 wordcloud.generate(long_string)
 
 # Save the word cloud
-wordcloud.to_file("img/first_review.png")
+wordcloud.to_file("img/wordcloud.png")
 
 # Display the generated image:
 plt.imshow(wordcloud, interpolation='bilinear')
