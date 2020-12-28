@@ -73,4 +73,5 @@ def emoticon_translation(word):
     elif word in emoticons_neg_cry:         newword = 'cry'
     # if newword != '':
     #    print(':)')
+    
     return newword

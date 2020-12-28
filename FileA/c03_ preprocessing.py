@@ -1,8 +1,9 @@
+import demoji
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from FileA.data import *
-from tweet_location import *
+from FileAlexia.tweet_location import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.stem import PorterStemmer
 from datetime import datetime
@@ -21,6 +22,7 @@ collections = db.collection_names()
 #####################################################################
 stop_words = set(stopwords.words('english'))
 stemmer = SnowballStemmer("english")
+
 
 #####################################################################
 
@@ -44,14 +46,30 @@ def preprocessing(text):
     #   We removed all non-English characters (non-ASCII characters) because the study focused on the analysis of
     #       messages in English. (and numbers.)
     tokens_only_letters = list(filter(lambda ele: re.search("[a-zA-Z\s]+", ele) is not None, tokens_basic_pre))
-    tokens_only_letters = [re.sub(r'[0-9]', '', i) for i in tokens_only_letters]
-    tokens_only_letters = [re.sub(r'[!@#$%^&*();:"?.>,<`~-]', '', i) for i in tokens_only_letters]
-    tokens_only_letters = [re.sub(r"[']", '', i) for i in tokens_only_letters]
-    tokens_only_letters = [re.sub(r"[/]", ' ', i) for i in tokens_only_letters]
+
+    #   We deTokenize here in order to use RE more efficinetly
+    text_deTokenized = TreebankWordDetokenizer().detokenize(tokens_only_letters)
+
+    #   We use RE to remove any unwanted characters from the stings
+    text_deTokenized = re.sub(r'[0-9]', '', text_deTokenized)
+    text_deTokenized = re.sub(r'[!@#$%^&*();:"?.>,<`~-]', '', text_deTokenized)
+    text_deTokenized = re.sub(r"[']", '', text_deTokenized)
+    text_deTokenized = re.sub(r"[/]", ' ', text_deTokenized)
+    text_deTokenized = re.sub(r"\t", " ", text_deTokenized)
+    text_deTokenized = re.sub(r"'\s+\s+'", " ", text_deTokenized)
+    text_deTokenized = re.sub(r" ️", "", text_deTokenized)
+
+    #   We deleted all emoji with the help of demoji library
+    emoji_to_delete = demoji.findall(text_deTokenized)
+    for emoji in emoji_to_delete:
+        text_deTokenized = re.sub(emoji, '', text_deTokenized)
+
+    #   We tokenized again
+    tokens_again = text_deTokenized.split()
 
     #   We removed stop_words
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
-    tokens_no_stop_words = [w for w in tokens_only_letters if w not in final_stop_words]
+    tokens_no_stop_words = [w for w in tokens_again if w not in final_stop_words]
 
     #   We used WordNetLemmatizer from the nltk library as a final step
     lemmatizer = WordNetLemmatizer()
@@ -128,7 +146,7 @@ tweet_index = 0
 
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
-    if collection == 'vaccine_test':
+    if collection == 'vaccine':
         for tweet in tweets:
             #   update Date
             date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
@@ -155,8 +173,7 @@ for collection in collections:
 unique_dates_frequency = Counter(all_dates)
 print(unique_dates_frequency.items())
 
-
 print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweets, ' total tweets')
-print('Percentage of tweets with country: ', tweets_loc_found_count/total_tweets *100)
+print('Percentage of tweets with country: ', tweets_loc_found_count / total_tweets * 100)
 
 #####################################################################
