@@ -31,7 +31,7 @@ def get_contractions(text):
         "y'all": "you all", "y'all'd": "you all would", "y'alll'd've": "you all would have", "y'all're": "you all are",
         "y'all've": "you all have", "you'd": "you would", "you'd've": "you would have", "you'll": "you will",
         "you'll've": "you will have", "you're": "you are", "you've": "you have", "isnt": "is not", " im ": " i am ",
-        " amp ": '', "&amp": ''
+        " amp ": '', "&amp": '', '--&gt': '', '&gt': ''
     }
 
     contraction_re = re.compile('(%s)' % '|'.join(contractions_dictionary.keys()))
