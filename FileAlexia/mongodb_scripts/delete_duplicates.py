@@ -13,16 +13,22 @@ cursor = coll.aggregate(
 )
 
 
+duplicate_found = False
 response = []
-for doc in cursor:
-    print(doc)
-    del doc["unique_ids"][0]
-    for id in doc["unique_ids"]:
+
+for duplicate in cursor:
+    duplicate_found = True
+    #print(doc)
+    del duplicate["unique_ids"][0]
+    for id in duplicate["unique_ids"]:
         response.append(id)
         #print(id)
 
 #print(response)
 coll.delete_many({"_id": {"$in": response}})
+
+if not duplicate_found:
+    print('No duplicates found')
 
 stop = timeit.default_timer()
 print('Time: %.5f' % (stop - start))
