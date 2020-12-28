@@ -2,7 +2,7 @@ import demoji
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
-from FileA.data import *
+from FileAlfaGama.data import *
 from FileAlexia.tweet_location import *
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.stem import PorterStemmer
