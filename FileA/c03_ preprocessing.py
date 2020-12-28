@@ -44,6 +44,10 @@ def preprocessing(text):
     #   We removed all non-English characters (non-ASCII characters) because the study focused on the analysis of
     #       messages in English. (and numbers.)
     tokens_only_letters = list(filter(lambda ele: re.search("[a-zA-Z\s]+", ele) is not None, tokens_basic_pre))
+    tokens_only_letters = [re.sub(r'[0-9]', '', i) for i in tokens_only_letters]
+    tokens_only_letters = [re.sub(r'[!@#$%^&*();:"?.>,<`~-]', '', i) for i in tokens_only_letters]
+    tokens_only_letters = [re.sub(r"[']", '', i) for i in tokens_only_letters]
+    tokens_only_letters = [re.sub(r"[/]", ' ', i) for i in tokens_only_letters]
 
     #   We removed stop_words
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
