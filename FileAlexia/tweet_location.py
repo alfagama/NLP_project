@@ -1,8 +1,8 @@
-import pymongo
 import geograpy
 import re
-from mongo_db import *
+from FileAlexia.mongodb_scripts.mongo_db import *
 
+collectionName = 'covidtemp'
 
 def recognizeSpecificCountries(text):
     '''
@@ -140,7 +140,7 @@ def update_tweet_location(tweet, location):
     )
 
 
-collection = db['covidtemp']
+collection = db[collectionName]
 total_tweets = collection.estimated_document_count()
 tweets_loc_found_count = 0
 tweet_index = 0
@@ -162,7 +162,7 @@ print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweet
 print('Percentage of tweets with country: ', tweets_loc_found_count/total_tweets *100)
 
 
-
+#Some tests
 '''mytext = 'London'
 places = geograpy.get_place_context(text=mytext)
 print('Input: ', mytext)
