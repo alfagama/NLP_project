@@ -81,7 +81,7 @@ def get_contractions(text):
         ' gts ': 'guess the song', ' hagn ': 'have a good night', ' hotd ': 'headline of the day',
         ' ht ': 'heard through', ' hth ': 'hope this helps', ' ic ': 'i see', ' icymi ': 'in case you missed it',
         ' idk ': 'i do not know', ' iirc ': 'if i remember correctly', ' imho ': 'in my humble opinion',
-        ' irl ': 'in real life', ' iwsn ': 'i want sex now', ' jk ': 'joking', '  jsyk ': 'just so you know',
+        ' irl ': 'in real life', ' iwsn ': 'i want sex now', ' jk ': 'joking', ' jsyk ': 'just so you know',
         ' jv ': 'joint venture', ' kk ': 'ok, got it', ' kyso ': 'knok your socks off', ' lhh ': 'laugh hella hard',
         ' lmao ': 'laugh my ass off', ' lmk ': 'let me know', ' lo ': 'litle child', ' mirl ': 'meet in eal life',
         ' mrjn ': 'marijuana', ' ndb ': 'not big deal', ' nct ': 'nobody cares though', ' nfw ': 'no fucking way',
