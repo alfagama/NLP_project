@@ -1,4 +1,4 @@
-from mongodb_scripts.mongo_db import *
+from FileAlexia.mongodb_scripts.mongo_db import *
 import timeit
 
 start = timeit.default_timer()
