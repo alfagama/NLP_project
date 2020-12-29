@@ -1,7 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
-from mongo_db import *
-import matplotlib.pyplot as plt
+from FileAlexia.mongodb_scripts.mongo_db import *
 import seaborn as sns
 from sklearn.decomposition import LatentDirichletAllocation as LDA
 import warnings
