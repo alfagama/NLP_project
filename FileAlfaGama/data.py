@@ -93,7 +93,7 @@ def get_contractions(text):
         ' sob ': 'son of a bitch', ' srs ': 'serious', ' stfu ': 'shut the fuck up',
         ' stfw ': 'search the fucking web,', " tftf ": "thanks for the follow", " tftt ": "thanks for this tweet",
         " tl ": "timeline", " tldr ": "too long did not read", " tl;dr ": "too long did not read",
-        " tmb ": "tweet me back", " tt ": "trending topic",  " ty ": "thank you", " tyia ": "thank you in advance",
+        " tmb ": "tweet me back", " tt ": "trending topic", " ty ": "thank you", " tyia ": "thank you in advance",
         " tyt ": "take your time", " tyvw ": "thank you very much", " w ": "with", " w/ ": "with",
         " w/e ": "whatever", " wtv ": "whatever", " ygtr ": "you got that right", " ykwim ": "you know what i mean",
         " ykyat ": "you know you are addicted to", " ymmv ": "your mileage may vary", " yolo ": "you only live once",
