@@ -34,9 +34,12 @@ def preprocessing(text):
     """
     #   We set all words to lower-case
     text_lowered = text.lower()
+    
+    #   We modified the most common abbreviations used in tweeter
+    tokens_no_abbreviations = " ".join(abbreviations_dictionary.get(ele, ele) for ele in text_lowered.split())
 
     #   We modified the contractions & split it into tokens
-    tokens_no_contractions = [get_contractions(word) for word in text_lowered.split()]
+    tokens_no_contractions = [get_contractions(word) for word in tokens_no_abbreviations.split()]
 
     #   We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from the messages because the
     #       hashtag symbols or the URLs did not contribute to the message analysis.
