@@ -137,7 +137,7 @@ abbreviations_dictionary = {
     'fotd': 'find of the day', 'ftw': 'for the win', 'fubar': 'fucked up beyond repair',
     'fwiw': 'for what it is worth', 'gmafb': 'giv me a fucking break', 'gtfooh': 'get the fuck out of here',
     'gts': 'guess the song', 'hagn': 'have a good night', 'hotd': 'headline of the day',
-    'ht': 'heard through', 'hth': 'hope this helps', 'ic': 'i see', 'icymi': 'in case you missed it',
+    'hth': 'hope this helps', 'ic': 'i see', 'icymi': 'in case you missed it',
     'idk': 'i do not know', 'iirc': 'if i remember correctly', 'imho': 'in my humble opinion',
     'irl': 'in real life', 'iwsn': 'i want sex now', 'jk': 'joking', 'jsyk': 'just so you know',
     'jv': 'joint venture', 'kk': 'ok, got it', 'kyso': 'knok your socks off', 'lhh': 'laugh hella hard',
