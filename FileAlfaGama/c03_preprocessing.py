@@ -41,7 +41,7 @@ def preprocessing(text):
     #   We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from the messages because the
     #       hashtag symbols or the URLs did not contribute to the message analysis.
     tokens_basic_pre = [token for token in tokens_no_contractions if not token.startswith('http')
-                        if not token.startswith('#') if not token.startswith('@')]
+                        if not token.startswith('#') if not token.startswith('@') if not token.startswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))]
 
     #   We removed all non-English characters (non-ASCII characters) because the study focused on the analysis of
     #       messages in English. (and numbers.)
@@ -51,13 +51,15 @@ def preprocessing(text):
     text_deTokenized = TreebankWordDetokenizer().detokenize(tokens_only_letters)
 
     #   We use RE to remove any unwanted characters from the stings
-    text_deTokenized = re.sub(r'[0-9]', '', text_deTokenized)
-    text_deTokenized = re.sub(r'[!@#$%^&*();:"?.>,<`~-]', '', text_deTokenized)
-    text_deTokenized = re.sub(r"[']", '', text_deTokenized)
+    text_deTokenized = re.sub(r'[0-9]', ' ', text_deTokenized)
+    text_deTokenized = re.sub(r'[!@#$%^&*();:"“”‘’?.>,<`~.\[\]\-]', ' ', text_deTokenized)
+    text_deTokenized = re.sub(r"[']", ' ', text_deTokenized)
+    text_deTokenized = re.sub(r"[⁦⁩]", ' ', text_deTokenized)
     text_deTokenized = re.sub(r"[/]", ' ', text_deTokenized)
     text_deTokenized = re.sub(r"\t", " ", text_deTokenized)
     text_deTokenized = re.sub(r"'\s+\s+'", " ", text_deTokenized)
     text_deTokenized = re.sub(r" ️", "", text_deTokenized)
+    text_deTokenized = re.sub(r'\b\w{1,1}\b', '', text_deTokenized)
 
     #   We deleted all emoji with the help of demoji library
     emoji_to_delete = demoji.findall(text_deTokenized)
@@ -66,6 +68,9 @@ def preprocessing(text):
 
     #   We tokenized again
     tokens_again = text_deTokenized.split()
+
+    #   Remove unwanted tokens
+    tokens_again = [x for x in tokens_again if x not in unwated_tokens]
 
     #   We removed stop_words
     final_stop_words = [x for x in stop_words if x not in ok_stop_words]
