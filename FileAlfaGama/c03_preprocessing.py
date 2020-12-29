@@ -1,8 +1,8 @@
 import nltk
 import demoji
-from pymongo import MongoClient
 from datetime import datetime
 from collections import Counter
+from pymongo import MongoClient
 from nltk import pos_tag
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
