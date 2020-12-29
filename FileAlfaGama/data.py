@@ -74,6 +74,10 @@ def get_contractions(text):
 ok_stop_words = {'not'
                  }
 
+# Unwanted tokens to be removed
+unwated_tokens = {'st', 'nd', 'rd'
+                  }
+
 # Positive Emoticons
 emoticons_pos_happy = {':-)', ':)', ';)', ':o)', ':]', ':3', ':c)', ':>', '=]', '8)', '=)', ':}', ':^)', ':-D', ':D',
                        '8-D', '8D', '=-3', '=3', ':-))', ":'-)", ":')"}
@@ -101,5 +105,4 @@ def emoticon_translation(word):
     elif word in emoticons_neg_cry:         newword = 'cry'
     # if newword != '':
     #    print(':)')
-
     return newword
