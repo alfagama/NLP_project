@@ -2,7 +2,7 @@ import geograpy
 import re
 from FileAlexia.mongodb_scripts.mongo_db import *
 
-collectionName = 'covidtemp'
+#collectionName = 'covidtemp'
 
 def recognizeSpecificCountries(text):
     '''
@@ -122,7 +122,7 @@ def getTweetLocation(tweet):
     return places.countries[0]
 
 
-
+'''
 def update_tweet_location(tweet, location):
     """
     :param location: tweet's location to import in a new column in db
@@ -160,7 +160,7 @@ for tweet in tweets:
 
 print('Found country for ', tweets_loc_found_count, ' tweets from ', total_tweets, ' total tweets')
 print('Percentage of tweets with country: ', tweets_loc_found_count/total_tweets *100)
-
+'''
 
 #Some tests
 '''mytext = 'London'
