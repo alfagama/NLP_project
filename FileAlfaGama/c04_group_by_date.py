@@ -14,7 +14,7 @@ all_dates = []
 count = 0
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
-    if collection == 'vaccine_test4':
+    if collection == 'vaccine_test3':
         for tweet in tweets:
             # date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
             # new_datetime = datetime.strftime(datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d')
@@ -32,7 +32,8 @@ for collection in collections:
 unique_dates_frequency = Counter(all_dates)
 print(unique_dates_frequency.items())
 #####################################################################
-with open('Dates/dates.txt'', 'w') as file:
-    file.write(json.dumps(unique_dates_frequency.items()))
+with open('Dates/dates.txt', 'w') as file:
+    for item in unique_dates_frequency.items():
+        file.write(json.dumps(item))
 
 #####################################################################
