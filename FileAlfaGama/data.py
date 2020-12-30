@@ -156,5 +156,6 @@ abbreviations_dictionary = {
     " w/e ": "whatever", " wtv ": "whatever", " ygtr ": "you got that right", " ykwim ": "you know what i mean",
     " ykyat ": "you know you are addicted to", " ymmv ": "your mileage may vary", " yolo ": "you only live once",
     " yoyo ": "you are on your own", " yw ": "you are welcome", " zomg ": "omg to the max",
-    'wth': 'what the hell', 'wtf': 'what the fuck', 'lol': 'laughing out loud', 'omg': 'oh my god'
+    'wth': 'what the hell', 'wtf': 'what the fuck', 'lol': 'laughing out loud', 'omg': 'oh my god',
+    '1st': 'first', '2nd': 'second', '3rd': 'third
 }
