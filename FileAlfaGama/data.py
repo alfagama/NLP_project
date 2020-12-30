@@ -93,16 +93,69 @@ emoticons_neg_sad = {':L', ':-/', '>:/', ':S', '>:[', ':-(', ':[', ':-||', '=L',
 emoticons_neg_angry = {':@'}
 emoticons_neg_cry = {":'-(", ":'(", ':\\', ':-c', ':c', ':{', '>:\\', ';('}
 
+
 def emoticon_translation(word):
     newword = ''
-    if word in emoticons_pos_happy:         newword = 'happy'
-    elif word in emoticons_pos_laugh:       newword = 'laugh'
-    elif word in emoticons_pos_kiss:        newword = 'kiss'
-    elif word in emoticons_pos_playfull:    newword = 'playfull'
-    elif word in emoticons_pos_love:        newword = 'love'
-    elif word in emoticons_neg_sad:         newword = 'sad'
-    elif word in emoticons_neg_angry:       newword = 'angry'
-    elif word in emoticons_neg_cry:         newword = 'cry'
+    if word in emoticons_pos_happy:
+        newword = 'happy'
+    elif word in emoticons_pos_laugh:
+        newword = 'laugh'
+    elif word in emoticons_pos_kiss:
+        newword = 'kiss'
+    elif word in emoticons_pos_playfull:
+        newword = 'playfull'
+    elif word in emoticons_pos_love:
+        newword = 'love'
+    elif word in emoticons_neg_sad:
+        newword = 'sad'
+    elif word in emoticons_neg_angry:
+        newword = 'angry'
+    elif word in emoticons_neg_cry:
+        newword = 'cry'
     # if newword != '':
     #    print(':)')
     return newword
+
+
+abbreviations_dictionary = {
+    #   Technical Twitter abbreviations:
+    'cc': 'carbon-copy', 'cx': 'correction', 'ct': 'cuttweet', 'dm': 'dirrect message',
+    'ht': 'hat tip', 'mt': 'modified tweet', 'prt': 'please retweet', 'rt': 'retweet',
+    #   Industry Twitter abbreviations:
+    'em': 'email marketing', 'ezine': 'electronic magazine', 'fb': 'facebook', 'li': 'linkedin',
+    'seo': 'search engine optimization', 'sm': 'social media', 'smm': 'social media marketing',
+    'smo': 'social media optimization', 'sn': 'social network', 'sroi': 'social return on investment',
+    'ugc': 'user generated content', 'yt': 'youtube',
+    #   Conversational abbreviations:
+    'ab': 'about', 'abt': 'about', 'afaik': 'as far as i know',
+    'ayfkmwts': 'are you fucking kidding me with this shit', 'b4': 'before', 'bfn': 'bye for now',
+    'bgd': 'background', 'bh': 'blockhead', 'br': 'best regards', 'btw': 'by the way',
+    'cd9': 'code 9, parents are around', 'chk': 'check', 'cul8r': 'see you later',
+    'dam': 'do not annoy me', 'dd': 'dear daughter', 'df': 'dear fiance', 'dp': 'profile pic',
+    'ds': 'dear son', 'dyk': 'do you know', 'ema': 'email address', 'f2f': 'face to face',
+    'ftf': 'face to face', 'ff': 'follow friday', 'ffs': "for fucks'sake", 'fml': 'fuck my life',
+    'fotd': 'find of the day', 'ftw': 'for the win', 'fubar': 'fucked up beyond repair',
+    'fwiw': 'for what it is worth', 'gmafb': 'giv me a fucking break', 'gtfooh': 'get the fuck out of here',
+    'gts': 'guess the song', 'hagn': 'have a good night', 'hotd': 'headline of the day',
+    'hth': 'hope this helps', 'ic': 'i see', 'icymi': 'in case you missed it',
+    'idk': 'i do not know', 'iirc': 'if i remember correctly', 'imho': 'in my humble opinion',
+    'irl': 'in real life', 'iwsn': 'i want sex now', 'jk': 'joking', 'jsyk': 'just so you know',
+    'jv': 'joint venture', 'kk': 'ok, got it', 'kyso': 'knok your socks off', 'lhh': 'laugh hella hard',
+    'lmao': 'laugh my ass off', 'lmk': 'let me know', 'lo': 'litle child', 'mirl': 'meet in eal life',
+    'mrjn': 'marijuana', 'ndb': 'not big deal', 'nct': 'nobody cares though', 'nfw': 'no fucking way',
+    'njoy': 'enjoy', 'nsfw': 'not safe for work', 'nts': 'note to self', 'oh': 'overheard',
+    'omfg': 'oh my fucking god', 'oomf': 'one of my friends', 'orly': 'oh, really',
+    'plmk': 'please let me know', 'pnp': 'party and play', 'qotd': 'quote of the day', 're': 'in reply to',
+    'rlrt': 'real life retweet', 'rtq': 'read the question', 'sfw': 'safe for work',
+    'smdh': 'shaking my damn head', 'smh': 'shaking my head', 'snafu': 'situation normal all fucked up',
+    'sob': 'son of a bitch', 'srs': 'serious', 'stfu': 'shut the fuck up',
+    'stfw': 'search the fucking web,', " tftf ": "thanks for the follow", " tftt ": "thanks for this tweet",
+    " tl ": "timeline", " tldr ": "too long did not read", " tl;dr ": "too long did not read",
+    " tmb ": "tweet me back", " tt ": "trending topic", " ty ": "thank you", " tyia ": "thank you in advance",
+    " tyt ": "take your time", " tyvw ": "thank you very much", " w ": "with", " w/ ": "with",
+    " w/e ": "whatever", " wtv ": "whatever", " ygtr ": "you got that right", " ykwim ": "you know what i mean",
+    " ykyat ": "you know you are addicted to", " ymmv ": "your mileage may vary", " yolo ": "you only live once",
+    " yoyo ": "you are on your own", " yw ": "you are welcome", " zomg ": "omg to the max",
+    'wth': 'what the hell', 'wtf': 'what the fuck', 'lol': 'laughing out loud', 'omg': 'oh my god',
+    '1st': 'first', '2nd': 'second', '3rd': 'third', 'probs': 'probably', 'ppl': 'people', 'pm': 'private message'
+}

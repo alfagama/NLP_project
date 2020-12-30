@@ -1,28 +1,28 @@
+import nltk
 import demoji
-from pymongo import MongoClient
-from nltk.corpus import stopwords
-from nltk.stem.snowball import SnowballStemmer
-from FileAlfaGama.data import *
-from FileAlexia.tweet_location import *
-from nltk.tokenize.treebank import TreebankWordDetokenizer
-from nltk.stem import PorterStemmer
 from datetime import datetime
 from collections import Counter
+from pymongo import MongoClient
 from nltk import pos_tag
-import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+from FileAlfaGama.data import *
+from FileAlexia.tweet_location import *
+
+#####################################################################
 nltk.download('wordnet')
 
 #####################################################################
 connection = MongoClient("mongodb://localhost:27017/")
 db = connection.TwitterDB
-
 collections = db.collection_names()
 
 #####################################################################
 stop_words = set(stopwords.words('english'))
 stemmer = SnowballStemmer("english")
-
 
 #####################################################################
 
@@ -34,9 +34,12 @@ def preprocessing(text):
     """
     #   We set all words to lower-case
     text_lowered = text.lower()
+    
+    #   We modified the most common abbreviations used in tweeter
+    tokens_no_abbreviations = " ".join(abbreviations_dictionary.get(ele, ele) for ele in text_lowered.split())
 
-    #   We modified the contractions & split it into tokens
-    tokens_no_contractions = [get_contractions(word) for word in text_lowered.split()]
+    #   We modified the contractions & split them into tokens
+    tokens_no_contractions = [get_contractions(word) for word in tokens_no_abbreviations.split()]
 
     #   We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from the messages because the
     #       hashtag symbols or the URLs did not contribute to the message analysis.
