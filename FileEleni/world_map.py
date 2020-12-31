@@ -1,4 +1,5 @@
-#from pycountry_convert import country_alpha2_to_continent_code, country_name_to_country_alpha2
+from pycountry_convert import country_alpha2_to_continent_code, country_name_to_country_alpha2
+import geopy
 from geopy.geocoders import Nominatim
 from pymongo import MongoClient
 from collections import Counter
@@ -7,12 +8,21 @@ import pandas as pd
 import folium
 from folium.plugins import MarkerCluster
 import branca.colormap as cmp
+from folium.features import DivIcon
+from geopy.exc import GeocoderTimedOut
 
+def do_geocode(address, attempt=1, max_attempts=5):
+    try:
+        return geolocator.geocode(address)
+    except GeocoderTimedOut:
+        if attempt <= max_attempts:
+            return do_geocode(address, attempt=attempt+1)
+        raise
 
 def remove_values_from_list(the_list, val):
    return [value for value in the_list if value != val]
 
-"""
+
 def get_continent(col):
     try:
         cn_a2_code = country_name_to_country_alpha2(col)
@@ -23,7 +33,7 @@ def get_continent(col):
     except:
         cn_continent = 'Unknown'
     return (cn_a2_code, cn_continent)
-"""
+
 
 #####################################################################
 connection = MongoClient("mongodb://localhost:27017/")
@@ -50,10 +60,13 @@ print(unique_tweets_frequency)
 df = []
 listOfContinents = []
 for index, value in enumerate(Counter(all_countries)):
+    print(index)
+    print(value)
     df.append([value, Counter(all_countries)[value]])
-    #listOfContinents.append(get_continent(value))
+    listOfContinents.append(get_continent(value))
 df_covid = pd.DataFrame(df, columns = ['Country', 'Total Tweets'])
-#print(listOfContinents)
+print(listOfContinents)
+
 
 geolocator = Nominatim(user_agent="my_user_agent")
 
@@ -74,19 +87,32 @@ step = cmp.StepColormap(
 
 #for each coordinate, create circlemarker of user percent
 for index, value in enumerate(Counter(all_countries)):
-    print(value)
-    #loc = geolocator.geocode(listOfContinents[index][0] + ',' + listOfContinents[index][1])
-    #if loc != None:
-    #lat = loc.latitude
-    #long = loc.longitude
-    radius=10
-    popup_text = """Country : {}<br>
-                #of Tweets : {}<br>"""
-    popup_text = popup_text.format(value,value)
-    #folium.CircleMarker(location = [lat, long], radius=radius, popup= popup_text, fill =True).add_to(marker_cluster)
+    loc = do_geocode(listOfContinents[index][0] + ',' + listOfContinents[index][1])
+    print(loc)
+    if loc != None:
+        numberOfTweets = Counter(all_countries)[value]
+        lat = loc.latitude
+        long = loc.longitude
+        radius=10
+        popup_text = """Country : {}<br>
+                    #of Tweets : {}<br>"""
+        popup_text = popup_text.format(value,numberOfTweets)
+        folium.map.Marker(location=[lat, long], radius=10,
+                          icon=DivIcon(
+                              icon_size=(40, 40),
+                              icon_anchor=(0, 0),
+                              html='<div style="font-size: 20pt">' + str(numberOfTweets) + '</div>',
+                          )
+                          ).add_to(world_map)
+        #folium.CircleMarker(location = [lat, long], radius=radius, popup= popup_text, fill =True).add_to(marker_cluster)
+    else:
+        print("I got None for this country: ", value)
 
-    #else:
-       # print("I got None for this country: ", value)
+
+
+
+
+
 folium.Choropleth(
         # The GeoJSON data to represent the world country
         geo_data=country_shapes,
@@ -105,7 +131,11 @@ folium.Choropleth(
                 'dashArray': '5, 3'  #dashed lines length,space between them
             }
     ).add_to(world_map)
-folium.Tooltip(text="eleni", sticky="false").add_to(world_map)
+
+#folium.Tooltip(text="eleni", sticky="false").add_to(world_map)
+
+
+
 # save map to html file
 step.add_to(world_map)
 world_map.save('index.html')
