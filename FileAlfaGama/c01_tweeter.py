@@ -5,8 +5,8 @@ import pandas as pd
 #####################################################################
 #   API key & Secret
 #####################################################################
-comsumer_key = 'pTGjQtJMUiv1RyCbOY6YD7a53'
-consumer_secret = 'xOhpCUMraZfGOEG21dAg3nFBWoSTgD4Xp0EvaiM2uA5aaIjYRJ'
+comsumer_key = ''
+consumer_secret = ''
 
 #####################################################################
 #   Connecting

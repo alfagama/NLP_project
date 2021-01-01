@@ -36,7 +36,7 @@ loc_dic = {"United States": 28950, "United Kingdom": 16886, "Canada": 7511, "Pan
            "American Samoa": 2, "Croatia": 19, "Bahamas": 3, "Peru": 10, "Togo": 1, "Fiji": 10, "Iceland": 15,
            "Russia": 1, "Latvia": 2, "Eritrea": 2, "Greenland": 1, "Taiwan": 1, "Senegal": 2, "Eswatini": 2,
            "Kazakhstan": 1, "French Guiana": 10, "Palau": 1, "Nicaragua": 3, "Palestine: State of": 5, "Madagascar": 1,
-           "Aruba": 1, "Namibia": 4, "Uzbekistan": 3, "Cuba": 3, "Cura\u00e7ao": 1, "Republic of Croatia": 1,
+           "Aruba": 1, "Namibia": 4, "Uzbekistan": 3, "Cuba": 3, "Republic of Croatia": 1,
            "Libya": 3, "Saint Helena: Ascension and Tristan da Cunha": 1, "Maldives": 3, "Viet Nam": 5, "Guernsey": 3,
            "Syrian Arab Republic": 4, "Armenia": 2, "": 3, "Sierra Leone": 5, "Tanzania": 1, "Trinidad and Tobago": 2,
            "Timor-Leste": 3, "Tonga": 2, "Turks and Caicos Islands": 1, "Belize": 2, "Hashemite Kingdom of Jordan": 1,
