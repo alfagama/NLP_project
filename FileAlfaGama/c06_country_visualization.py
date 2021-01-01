@@ -16,5 +16,5 @@ fig = px.choropleth(df_merged, locations="iso_alpha",
                     hover_name="country",
                     color_continuous_scale=px.colors.sequential.Plasma)
 
-plotly.offline.plot(fig, filename='lifeExp.html')
+plotly.offline.plot(fig, filename='worldmap.html')
 fig.show()
