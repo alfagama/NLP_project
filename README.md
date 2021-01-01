@@ -1,15 +1,30 @@
-# NLP_project
-*School Project*
+## MSc Data & Web Science, Aristotle University of Thessaloniki (AUTH)
+### Course: Text Mining and Natural Language Processing
 
-### MSc Data & Web Science, Aristotle University of Thessaloniki (AUTH)
+**Team Members**:
+1. George Arampatzis
+2. Alexia Fytili
+3. Eleni Tsiolaki
 
-Course: Text Mining and Natural Language Processing
+## Project:
+*“Analysis of public reactions to COVID-19 related tweets based on geolocation”*
 
-## Task:
-*“Analysis of public reactions to Coronavirus-related tweets based on geolocation”*
+----------------------------------------------------
+
+## [PROJECT REPORT](https://drive.google.com/file/d/1D9RShWGWAr4y8_9XqsGT8kg2dIgVL8IE/view?usp=sharing)
+
+----------------------------------------------------
 
 ## Dataset(s):
 Utilizing the Twitter API, we aim to gather data based on a variety of hashtags related to Coronavirus used on Twitter.
+
+In more detail the 3 datasets with their respective entries number:  
+
+| Tables        | Entries       | Cool  |
+| ------------- |:-------------:| -----:|
+| Covid         | 1.000.000     | $1600 |
+| Quarantine    | 950.000       |   $12 |
+| Vaccine       | 136.088       |    $1 |
 
 ## Evaluation measure:
 - Unsupervised ML on data retrieved from Twitter
@@ -17,19 +32,3 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 
 ----------------------------------------------------
 
-## Ideas
-1. Flow of positive/negative/neutral tweets from 10/12/20 ~= 24/01/20 to subjects:
-- covid / coronavirus
-- quarantine
-- vaccine
-
-e.g. In "vaccine.csv": *"25,dinah_wise,"RT @iCyclone: BAM! We've got a #vaccine. Time to knock out #COVID19. 👊 I'm psyched to get my shots (of course *after* frontline heroes, med…"* -> Positive Tweet!
-
-2. Flow chart between different periods of interest:
-- Vaccine announcement
-- Vaccine release to UK
-- Vaccine release to USA (expected in a week 15-20/12/20)
-- ... (Something major that will happen soon! BEWARE!! #spooky)
-3. Most common bi-grams / tri-grams / etc... in the covid posts
-4. ?
-5. ...
