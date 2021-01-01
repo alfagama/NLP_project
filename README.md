@@ -18,11 +18,11 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 
 In more detail the 3 datasets with their respective entries number:  
 
-| Tables        | Entries       | Cool  |
+| Tables        | Entries       | Cols  |
 | ------------- |:-------------:| -----:|
-| Covid         | 1.000.000     | $1600 |
-| Quarantine    | 950.000       |   $12 |
-| Vaccine       | 136.088       |    $1 |
+| Covid         | 1.000.000     |  122  |
+| Quarantine    | 950.000       |  122  |
+| Vaccine       | 136.088       |  122  |
 
 ## Methodology:
 -
