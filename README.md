@@ -1,13 +1,11 @@
 ## MSc Data & Web Science, Aristotle University of Thessaloniki (AUTH)
 ### Course: Text Mining and Natural Language Processing
-
+#### Project: *“Analysis of public reactions to COVID-19 related tweets based on geolocation”*
+----------------------------------------------------
 **Team Members**:
 1. George Arampatzis
 2. Alexia Fytili
 3. Eleni Tsiolaki
-
-## Project:
-*“Analysis of public reactions to COVID-19 related tweets based on geolocation”*
 
 ----------------------------------------------------
 
@@ -25,6 +23,10 @@ In more detail the 3 datasets with their respective entries number:
 | Covid         | 1.000.000     | $1600 |
 | Quarantine    | 950.000       |   $12 |
 | Vaccine       | 136.088       |    $1 |
+
+## Methodology:
+-
+-
 
 ## Evaluation measure:
 - Unsupervised ML on data retrieved from Twitter
