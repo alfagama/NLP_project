@@ -34,7 +34,7 @@ def preprocessing(text):
     """
     #   We set all words to lower-case
     text_lowered = text.lower()
-    
+
     #   We modified the most common abbreviations used in tweeter
     tokens_no_abbreviations = " ".join(abbreviations_dictionary.get(ele, ele) for ele in text_lowered.split())
 
@@ -44,7 +44,8 @@ def preprocessing(text):
     #   We removed the hashtag symbol and its content (e.g., #COVID19), @users, and URLs from the messages because the
     #       hashtag symbols or the URLs did not contribute to the message analysis.
     tokens_basic_pre = [token for token in tokens_no_contractions if not token.startswith('http')
-                        if not token.startswith('#') if not token.startswith('@') if not token.startswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))]
+                        if not token.startswith('#') if not token.startswith('@') if
+                        not token.startswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))]
 
     #   We removed all non-English characters (non-ASCII characters) because the study focused on the analysis of
     #       messages in English. (and numbers.)
@@ -106,6 +107,7 @@ def preprocessing(text):
 
 
 def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date, country):
+# def update_preprocessed_column(clean_text, country):
     """
     :param f_tokens: tokenized full_text to import in a new column in db
     :param clean_tokens: tokenized & cleaned full_text to import in a new column in db
@@ -136,7 +138,8 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date, country
                     "text_preprocessed": clean_text,
                     "bigrams": Counter(zip(clean_tokens, clean_tokens[1:])).most_common(),
                     "trigrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:])).most_common(),
-                    "fourgrams": Counter(zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common(),
+                    "fourgrams": Counter(
+                        zip(clean_tokens, clean_tokens[1:], clean_tokens[2:], clean_tokens[3:])).most_common(),
                     "bigrams_full": Counter(zip(f_tokens, f_tokens[1:])).most_common(),
                     "trigrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:])).most_common(),
                     "fourgrams_full": Counter(zip(f_tokens, f_tokens[1:], f_tokens[2:], f_tokens[3:])).most_common()
@@ -148,29 +151,33 @@ def update_preprocessed_column(f_tokens, clean_tokens, clean_text, date, country
 #####################################################################
 #   stuff for print at the end!
 all_dates = []
-total_tweets = collection.estimated_document_count()
+total_tweets = db['vaccine_test4'].estimated_document_count()
 tweets_loc_found_count = 0
 tweet_index = 0
-
+counter = 0
 for collection in collections:
     tweets = db[collection].find().batch_size(10)
-    if collection == 'vaccine':
+    if collection == 'vaccine_test4':
         for tweet in tweets:
-            #   update Date
-            date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
+            # #   update Date
+            # date = db[collection].find_one({'created_at': tweet["created_at"]})["created_at"]
+            date = tweet["created_at"]
             new_datetime = datetime.strftime(datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d')
             #   update location
             tweet_country = getTweetLocation(tweet)
             #   preprocessed data + ngrams
-            text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
+            # text = db[collection].find_one({'full_text': tweet["full_text"]})["full_text"]
+            text = tweet["full_text"]
             tokens, preprocessed_tokens, preprocessed_text = preprocessing(text)
             update_preprocessed_column(tokens, preprocessed_tokens, preprocessed_text, new_datetime, tweet_country)
+            update_preprocessed_column('1', tweet_country)
             # prints for data
             print("Before: ")
             print(text)
             print("After: ")
-            print(tokens)
-            print(preprocessed_tokens)
+            print(preprocessed_text)
+            counter += 1
+            print(counter, " / 136,137, ")
             # prints for date
             all_dates.append(new_datetime)
             # prints for location
