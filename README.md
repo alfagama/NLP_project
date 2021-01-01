@@ -3,7 +3,7 @@
 #### Project: *“Analysis of public reactions to COVID-19 related tweets based on geolocation”*
 ----------------------------------------------------
 **Team Members**:
-1. George Arampatzis
+1. Georgios Arampatzis
 2. Alexia Fytili
 3. Eleni Tsiolaki
 
