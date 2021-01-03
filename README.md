@@ -20,8 +20,8 @@ In more detail the 3 datasets with their respective entries number:
 
 | Tables        | Entries       | Cols  |
 | ------------- |:-------------:| -----:|
-| Covid         | 1.000.000     |  122  |
-| Quarantine    | 950.000       |  122  |
+| Covid         | 1.002.599     |  122  |
+| Quarantine    | 955.470       |  122  |
 | Vaccine       | 136.088       |  122  |
 
 ## Methodology:
