@@ -9,7 +9,8 @@
 
 ----------------------------------------------------
 
-## [PROJECT REPORT](https://drive.google.com/file/d/1T63tB-7z8BRbO3uoXrfX20hcocEdgIWz/view?usp=sharing)
+## [PROJECT REPORT PDF](https://drive.google.com/file/d/1BWTRuGgoJlr7fDSwpupI3h6CBZsR4kt5/view?usp=sharing)
+## [PROJECT REPORT DOC](https://docs.google.com/document/d/1D9RShWGWAr4y8_9XqsGT8kg2dIgVL8IE/edit)
 
 ----------------------------------------------------
 
