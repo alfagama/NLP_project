@@ -39,9 +39,12 @@ In more detail the 3 datasets with their respective entries number:
 .
 └── twitter_sentiment_analysis_based_on_geolocation
     ├── Dates
+    │   ├── .png
+    │   ├── .png
+    │   ├── Date-Tweet_plot_vaccine.png
     │   ├── .txt
     │   ├── .txt
-    │   └── vaccine_dates.txt vaccines_map.png
+    │   └── vaccine_dates.txt
     ├── Locations
     │   ├── .png
     │   ├── .png
