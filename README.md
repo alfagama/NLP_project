@@ -37,7 +37,7 @@ In more detail the 3 datasets with their respective entries number:
 
 ```
 .
-└── twitter_sentiment_analysis
+└── twitter_sentiment_analysis_based_on_geolocation
     ├── Dates
     │   ├── .txt
     │   ├── .txt
