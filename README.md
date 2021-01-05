@@ -41,7 +41,11 @@ In more detail the 3 datasets with their respective entries number:
     ├── Dates
     │   ├── .txt
     │   ├── .txt
-    │   └── vaccine_dates.txt
+    │   └── vaccine_dates.txt vaccines_map.png
+    ├── Locations
+    │   ├── .png
+    │   ├── .png
+    │   └── vaccines_map.png
     ├── Ngrams
     │   ├── .txt
     │   ├── .txt
