@@ -44,10 +44,13 @@ loc_dic = {"United States": 28950, "United Kingdom": 16886, "Canada": 7511, "Pan
            "Republic of Serbia": 1, "Mali": 1, "Cote d'Ivoire": 1, "Northern Mariana Islands": 1}
 
 #   ###############################################
-#   merge df with gapminder on 'country'
+#   df with countries and total number of tweets in each
 #   ###############################################
 df_counts = pd.DataFrame(loc_dic.items(), columns=['country', 'counts'])
-np.random.seed(12)
+
+#   ###############################################
+#   merge df with gapminder on 'country'
+#   ###############################################
 gapminder = px.data.gapminder().query("year==2007")
 df_countries = pd.DataFrame(gapminder)
 df_merged = pd.merge(df_countries, df_counts, on='country')
