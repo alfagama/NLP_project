@@ -35,3 +35,38 @@ In more detail the 3 datasets with their respective entries number:
 
 ----------------------------------------------------
 
+```
+.
+└── twitter_sentiment_analysis
+    ├── Dates
+    │   ├── .txt
+    │   ├── .txt
+    │   └── vaccine_dates.txt
+    ├── Ngrams
+    │   ├── .txt
+    │   ├── .txt
+    │   ├── bigrams_vaccine__final.txt
+    │   ├── .txt
+    │   ├── .txt
+    │   ├── fourgrams_vaccine_final.txt
+    │   ├── .txt
+    │   ├── .txt
+    │   └── trigrams_vaccine_final.txt
+    ├── TopicModelling
+    │   ├── .txt 
+    │   ├── .txt
+    │   └── vaccine_topics.txt
+    ├── Useful_for_mongodb
+    │   ├── duplicates/etc.withdb.py
+    │   ├── .py
+    │   └── .py
+    ├── README.md
+    ├── country_visualization.py
+    ├── dictionaries.py
+    ├── ngrams.py
+    ├── preprocessing.py
+    ├── ngrams.py
+    ├── unsupervised_lexicon_based.py
+    ├── .py
+    └── .py
+```
