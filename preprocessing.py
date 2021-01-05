@@ -10,7 +10,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from dictionaries import *
-from FileAlexia.tweet_location import *
+from tweet_location import *
 
 #####################################################################
 nltk.download('wordnet')
