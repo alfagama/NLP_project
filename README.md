@@ -60,6 +60,10 @@ In more detail the 3 datasets with their respective entries number:
     │   ├── .txt 
     │   ├── .txt
     │   └── vaccine_topics.txt
+    ├── WordClouds
+    │   ├── .png
+    │   ├── .png
+    │   └── vaccine_wordcloud.png
     ├── Useful_for_mongodb
     │   ├── duplicates/etc.withdb.py
     │   ├── .py
