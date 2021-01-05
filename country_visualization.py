@@ -108,5 +108,5 @@ fig.update_layout(
     #     showarrow=False
     # )]
 )
-plotly.offline.plot(fig, filename='Locations/worldmap_in_html3.html')
+plotly.offline.plot(fig, filename='Outputs/Locations/worldmap_in_html3.html')
 fig.show()

@@ -60,13 +60,13 @@ for collection in collections:
 
 print("writing bigrams")
 bigrams_file = dict(sorted(bigram_dictionary.items(), key=operator.itemgetter(1), reverse=True))
-with open('Ngrams/bigrams_vaccine__final.txt', 'w') as file:
+with open('Outputs/Ngrams/bigrams_vaccine__final.txt', 'w') as file:
     file.write(json.dumps(bigrams_file))
 print("writing trigrams")
 trigrams_file = dict(sorted(trigram_dictionary.items(), key=operator.itemgetter(1), reverse=True))
-with open('Ngrams/trigrams_vaccine_final.txt', 'w') as file:
+with open('Outputs/Ngrams/trigrams_vaccine_final.txt', 'w') as file:
     file.write(json.dumps(trigrams_file))
 print("writing fourgrams")
 fourgrams_file = dict(sorted(fourgram_dictionary.items(), key=operator.itemgetter(1), reverse=True))
-with open('Ngrams/fourgrams_vaccine_final.txt', 'w') as file:
+with open('Outputs/Ngrams/fourgrams_vaccine_final.txt', 'w') as file:
     file.write(json.dumps(fourgrams_file))
