@@ -19,10 +19,8 @@ from transformers import AdamW, get_linear_schedule_with_warmup
 #   ###################################################################
 df = pd.read_csv("Data/artificial_ground_truth.csv",
                  sep=',',
-                 # names=['_id', 'label', 'id', 'tweet_text', 'text_preprocessed', 'tokens_preprocessed'],
                  names=['_id', 'id', 'text_preprocessed', 'tweet_date', 'location',
                         'textblob_preprocessed_label', 'vader_preprocessed_label'],
-                 # header=None,  # no header, alternative header = header_col
                  index_col=None,  # no index, alternative header = index_row
                  skiprows=0  # how many rows to skip / not include in read_csv
                  )
@@ -177,7 +175,6 @@ scheduler = get_linear_schedule_with_warmup(
     num_warmup_steps=0,
     num_training_steps=len(dataloader_train) * epochs
 )
-
 
 #   ###################################################################
 #   F1
