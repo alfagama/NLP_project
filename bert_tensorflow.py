@@ -9,25 +9,35 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 print(model.summary())
 
-df = pd.read_csv("Data/sentiment_sample.csv",
+df = pd.read_csv("Data/sentiment140.csv",
                  sep=',',
                  names=['_id', 'label', 'id', 'tweet_text', 'text_preprocessed', 'tokens_preprocessed'],
-                 # header=None,  # no header, alternative header = header_col
-                 index_col=None,  # no index, alternative header = index_row
-                 skiprows=0  # how many rows to skip / not include in read_csv
+                 index_col=None,
+                 skiprows=0
                  )
 
 df = df.drop(['_id', 'tweet_text', 'tokens_preprocessed'], axis=1)
 df = df.rename(columns={'label': 'LABEL_COLUMN', 'text_preprocessed': 'DATA_COLUMN'})
 df.set_index('id', inplace=True)
-
 print(df.head())
 
 train, test = train_test_split(df, test_size=0.2, random_state=11)
-print(train.head())
-print(test.head())
-print(len(train))
-print(len(test))
+# print(train.head())
+# print(test.head())
+# print(len(train))
+# print(len(test))
+
+df_test = pd.read_csv("Data/vaccine_db.csv",
+                      sep=',',
+                      names=['_id', 'id', 'text_preprocessed', 'tweet_date', 'country',
+                             'textblob_preprocessed_label', 'vader_preprocessed_label'],
+                      index_col=None,
+                      skiprows=0
+                      )
+
+df_test = df_test.rename(columns={'text_preprocessed': 'DATA_COLUMN'})
+df_test.set_index('id', inplace=True)
+print(df_test.head())
 
 
 def convert_data_to_examples(train, test, DATA_COLUMN, LABEL_COLUMN):
@@ -106,34 +116,30 @@ train_data = train_data.shuffle(100).batch(32).repeat(2)
 validation_data = convert_examples_to_tf_dataset(list(validation_InputExamples), tokenizer)
 validation_data = validation_data.batch(32)
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0),
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5,
+                                                 epsilon=1e-08,
+                                                 clipnorm=1.0),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy('accuracy')])
 
-model.fit(train_data, epochs=2, validation_data=validation_data)
-
-df_test = pd.read_csv("Data/sentiment_sample_test.csv",
-                 sep=',',
-                 names=['_id', 'label', 'id', 'tweet_text', 'text_preprocessed', 'tokens_preprocessed'],
-                 # header=None,  # no header, alternative header = header_col
-                 index_col=None,  # no index, alternative header = index_row
-                 skiprows=0  # how many rows to skip / not include in read_csv
-                 )
-
-df_test = df_test.drop(['_id', 'tweet_text', 'tokens_preprocessed', 'label'], axis=1)
-df_test = df_test.rename(columns={'text_preprocessed': 'DATA_COLUMN'})
-df_test.set_index('id', inplace=True)
-
-print(df_test.head())
+model.fit(train_data,
+          epochs=5,
+          validation_data=validation_data)
 
 dataframe_to_predict = df_test['DATA_COLUMN'].astype(str).values.tolist()
 print(dataframe_to_predict)
 
-tf_batch = tokenizer(dataframe_to_predict, max_length=128, padding=True, truncation=True, return_tensors='tf')
+tf_batch = tokenizer(dataframe_to_predict,
+                     max_length=128,
+                     padding=True,
+                     truncation=True,
+                     return_tensors='tf')
 tf_outputs = model(tf_batch)
 tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
 labels = ['0', '1']
 label = tf.argmax(tf_predictions, axis=1)
 label = label.numpy()
-for i in range(len(dataframe_to_predict)):
-  print(dataframe_to_predict[i], ": \n", labels[label[i]])
+# for i in range(len(dataframe_to_predict)):
+#   print(dataframe_to_predict[i], ": \n", labels[label[i]])
+df_test['bert_label'] = label
+df_test.to_csv(r'bert_labeled_full.csv', index=False, header=True)
