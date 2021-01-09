@@ -91,24 +91,29 @@ def convert_examples_to_tf_dataset(examples, tokenizer, max_length=128):
 
 DATA_COLUMN = 'DATA_COLUMN'
 LABEL_COLUMN = 'LABEL_COLUMN'
-
+print("convert_data_to_examples..")
 train_InputExamples = convert_data_to_examples(train, DATA_COLUMN, LABEL_COLUMN)
-
+print("convert_examples_to_tf_dataset..")
 train_data = convert_examples_to_tf_dataset(list(train_InputExamples), tokenizer)
 train_data = train_data.shuffle(100).batch(32).repeat(2)
-
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0),
+print("compile..")
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5, 
+                                                 epsilon=1e-08, 
+                                                 clipnorm=1.0),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy('accuracy')])
-
+print("fit..")
 model.fit(train_data,
           epochs=2,
           batch_size=32
           )
 
 print("Sentiment140 predictions:...")
-
-tf_batch = tokenizer(dataframe_to_predict, max_length=128, padding=True, truncation=True, return_tensors='tf')
+tf_batch = tokenizer(dataframe_to_predict, 
+                     max_length=128, 
+                     padding=True, 
+                     truncation=True, 
+                     return_tensors='tf')
 tf_outputs = model(tf_batch)
 tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
 labels = ['0', '1']
