@@ -3,6 +3,7 @@ import tensorflow as tf
 from transformers import BertTokenizer, TFBertForSequenceClassification
 from transformers import InputExample, InputFeatures
 from sklearn.model_selection import train_test_split
+from sklearn import metrics
 
 model = TFBertForSequenceClassification.from_pretrained("bert-base-uncased")
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
@@ -12,48 +13,31 @@ print(model.summary())
 df = pd.read_csv("Data/sentiment140.csv",
                  sep=',',
                  names=['_id', 'label', 'id', 'tweet_text', 'text_preprocessed', 'tokens_preprocessed'],
-                 index_col=None,
-                 skiprows=0
+                 index_col=None,  # no index, alternative header = index_row
+                 skiprows=0  # how many rows to skip / not include in read_csv
                  )
 
 df = df.drop(['_id', 'tweet_text', 'tokens_preprocessed'], axis=1)
 df = df.rename(columns={'label': 'LABEL_COLUMN', 'text_preprocessed': 'DATA_COLUMN'})
 df.set_index('id', inplace=True)
-print(df.head())
 
 train, test = train_test_split(df, test_size=0.2, random_state=11)
-# print(train.head())
-# print(test.head())
-# print(len(train))
-# print(len(test))
 
-df_test = pd.read_csv("Data/vaccine_db.csv",
-                      sep=',',
-                      names=['_id', 'id', 'text_preprocessed', 'tweet_date', 'country',
-                             'textblob_preprocessed_label', 'vader_preprocessed_label'],
-                      index_col=None,
-                      skiprows=0
-                      )
+print(len(train))
+print(len(test))
 
-df_test = df_test.rename(columns={'text_preprocessed': 'DATA_COLUMN'})
-df_test.set_index('id', inplace=True)
-print(df_test.head())
+dataframe_to_predict = test['DATA_COLUMN'].astype(str).values.tolist()
+dataframe_to_predict_labels = test['LABEL_COLUMN'].astype(str).values.tolist()
 
 
-def convert_data_to_examples(train, test, DATA_COLUMN, LABEL_COLUMN):
+def convert_data_to_examples(train, DATA_COLUMN, LABEL_COLUMN):
     train_InputExamples = train.apply(
         lambda x: InputExample(guid=None,  # Globally unique ID for bookkeeping, unused in this case
                                text_a=x[DATA_COLUMN],
                                text_b=None,
                                label=x[LABEL_COLUMN]), axis=1)
 
-    validation_InputExamples = test.apply(
-        lambda x: InputExample(guid=None,  # Globally unique ID for bookkeeping, unused in this case
-                               text_a=x[DATA_COLUMN],
-                               text_b=None,
-                               label=x[LABEL_COLUMN]), axis=1)
-
-    return train_InputExamples, validation_InputExamples
+    return train_InputExamples
 
 
 def convert_examples_to_tf_dataset(examples, tokenizer, max_length=128):
@@ -108,38 +92,37 @@ def convert_examples_to_tf_dataset(examples, tokenizer, max_length=128):
 DATA_COLUMN = 'DATA_COLUMN'
 LABEL_COLUMN = 'LABEL_COLUMN'
 
-train_InputExamples, validation_InputExamples = convert_data_to_examples(train, test, DATA_COLUMN, LABEL_COLUMN)
+train_InputExamples = convert_data_to_examples(train, DATA_COLUMN, LABEL_COLUMN)
 
 train_data = convert_examples_to_tf_dataset(list(train_InputExamples), tokenizer)
 train_data = train_data.shuffle(100).batch(32).repeat(2)
 
-validation_data = convert_examples_to_tf_dataset(list(validation_InputExamples), tokenizer)
-validation_data = validation_data.batch(32)
-
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5,
-                                                 epsilon=1e-08,
-                                                 clipnorm=1.0),
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy('accuracy')])
 
 model.fit(train_data,
-          epochs=5,
-          validation_data=validation_data)
+          epochs=2,
+          batch_size=32
+          )
 
-dataframe_to_predict = df_test['DATA_COLUMN'].astype(str).values.tolist()
-print(dataframe_to_predict)
+print("Sentiment140 predictions:...")
 
-tf_batch = tokenizer(dataframe_to_predict,
-                     max_length=128,
-                     padding=True,
-                     truncation=True,
-                     return_tensors='tf')
+tf_batch = tokenizer(dataframe_to_predict, max_length=128, padding=True, truncation=True, return_tensors='tf')
 tf_outputs = model(tf_batch)
 tf_predictions = tf.nn.softmax(tf_outputs[0], axis=-1)
 labels = ['0', '1']
 label = tf.argmax(tf_predictions, axis=1)
 label = label.numpy()
-# for i in range(len(dataframe_to_predict)):
-#   print(dataframe_to_predict[i], ": \n", labels[label[i]])
-df_test['bert_label'] = label
-df_test.to_csv(r'bert_labeled_full.csv', index=False, header=True)
+
+# print(dataframe_to_predict)
+# print(dataframe_to_predict_labels)
+# print(label)
+predictions = []
+for i in range(len(dataframe_to_predict)):
+    predictions.append(labels[label[i]])
+
+print('Accuracy: ', metrics.accuracy_score(dataframe_to_predict_labels, predictions))
+print('Precision: ', metrics.precision_score(dataframe_to_predict_labels, predictions, average="macro"))
+print('Recall: ', metrics.recall_score(dataframe_to_predict_labels, predictions, average="macro"))
+print('F1 Score: ', metrics.f1_score(dataframe_to_predict_labels, predictions, average="macro"))
