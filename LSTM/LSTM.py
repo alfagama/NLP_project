@@ -16,7 +16,6 @@ from sklearn import metrics
 
 
 
-
 COLLECTIONAME = 'sentiment140'
 
 
