@@ -167,10 +167,10 @@ print("Recall: %.6f" % (recall))
 y_pred = model.predict_classes(X_test, verbose=2)
 
 print("\nEvaluation on test data using Sklearn metrics:")
-print("Accuracy: %.4f" % metrics.accuracy_score(Y_test_classes_for_evaluation, y_pred))
-print("Precision: %.4f" % metrics.precision_score(Y_test_classes_for_evaluation, y_pred, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
-print("Recall: %.4f" % metrics.recall_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
-print("F1: %.4f \n" % metrics.f1_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
+print("Accuracy: %.6f" % metrics.accuracy_score(Y_test_classes_for_evaluation, y_pred))
+print("Precision: %.6f" % metrics.precision_score(Y_test_classes_for_evaluation, y_pred, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
+print("Recall: %.6f" % metrics.recall_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
+print("F1: %.6f \n" % metrics.f1_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
 #----------------------------------
 
 
