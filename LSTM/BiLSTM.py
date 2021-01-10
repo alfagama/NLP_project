@@ -7,10 +7,14 @@ from keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
 from keras.callbacks import ModelCheckpoint
+from keras.metrics import Precision, Recall, Accuracy
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 from collections import Counter
 import pickle
+from sklearn import metrics
+
+
 
 
 COLLECTIONAME = 'sentiment140'
@@ -41,24 +45,32 @@ data = shuffle(data)
 
 
 
-# Convert label to categorical
+# Convert positive from 4 to 1
 #----------------------------------
 data['label'] = data['label'].replace('4','1') #replace 4 (meaning positive) to 1
-
-# When working with categorical data, we don’t want to leave it as integers because the model will interpreted the samples
-# with a higher number as having more significance. to_categorical is a quick way of encoding the data.
-#[0. 1.] -> positive -> 4
-#[1. 0.] -> negative -> 0
-Y = to_categorical(data['label'], num_classes=2)
 #----------------------------------
+
 
 
 
 # Train test split
 #----------------------------------
-X_train, X_test, Y_train, Y_test = train_test_split(data['text_preprocessed'], Y, test_size=0.2, random_state=42)
+X_train, X_test, Y_train, Y_test = train_test_split(data['text_preprocessed'], data['label'], test_size=0.2, random_state=42)
 print(X_train.shape, Y_train.shape)
 print(X_test.shape, Y_test.shape)
+#----------------------------------
+
+
+
+# Convert label to categorical
+#----------------------------------
+# When working with categorical data, we don’t want to leave it as integers because the model will interpreted the samples
+# with a higher number as having more significance. to_categorical is a quick way of encoding the data.
+#[0. 1.] -> positive -> 4 (or 1)
+#[1. 0.] -> negative -> 0
+Y_test_classes_for_evaluation = Y_test.astype(int)
+Y_train = to_categorical(Y_train, num_classes=2)
+Y_test = to_categorical(Y_test, num_classes=2)
 #----------------------------------
 
 
@@ -120,9 +132,10 @@ input_dim = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (ind
 
 model = Sequential()
 model.add(Embedding(input_dim=input_dim, output_dim=40, input_length = X_train.shape[1]))
-model.add(Bidirectional(LSTM(20,dropout=0.6)))
-model.add(Dense(2,activation='sigmoid'))
-model.compile(optimizer='rmsprop',loss='binary_crossentropy', metrics=['accuracy'])
+model.add(SpatialDropout1D(0.6))
+model.add(Bidirectional(LSTM(50, dropout=0.6, recurrent_dropout=0.6)))
+model.add(Dense(2, activation='sigmoid'))
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy', Precision(), Recall()])
 print(model.summary())
 #----------------------------------
 
@@ -136,11 +149,28 @@ history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=
 #----------------------------------
 
 
-# Evaluate model
+# Evaluate with Keras
 #----------------------------------
-score, acc = model.evaluate(X_test, Y_test, verbose=1, batch_size=batch_size)
-print("Score: %.6f" % (score))
-print("Accuracy: %.6f" % (acc))
+loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=1, batch_size=batch_size)
+#print(model.metrics_names)
+print("Evaluation on test data using Keras metrics:")
+print("Loss: %.6f" % (loss))
+print("Accuracy: %.6f" % (accuracy))
+print("Precision: %.6f" % (precision))
+print("Recall: %.6f" % (recall))
+#----------------------------------
+
+
+
+#Evaluation with Sklearn
+#----------------------------------
+y_pred = model.predict_classes(X_test, verbose=2)
+
+print("\nEvaluation on test data using Sklearn metrics:")
+print("Accuracy: %.4f" % metrics.accuracy_score(Y_test_classes_for_evaluation, y_pred))
+print("Precision: %.4f" % metrics.precision_score(Y_test_classes_for_evaluation, y_pred, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
+print("Recall: %.4f" % metrics.recall_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
+print("F1: %.4f \n" % metrics.f1_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
 #----------------------------------
 
 
