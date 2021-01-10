@@ -7,13 +7,12 @@ from keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
 from keras.callbacks import ModelCheckpoint
-from keras.metrics import Precision, Recall, Accuracy
+from keras.metrics import Precision, Recall
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 from collections import Counter
 import pickle
 from sklearn import metrics
-
 
 
 
@@ -52,7 +51,6 @@ data['label'] = data['label'].replace('4','1') #replace 4 (meaning positive) to 
 
 
 
-
 # Train test split
 #----------------------------------
 X_train, X_test, Y_train, Y_test = train_test_split(data['text_preprocessed'], data['label'], test_size=0.2, random_state=42)
@@ -81,6 +79,16 @@ train_words_counter = Counter(word for sentence in list(X_train) for word in sen
 #train_words_count = sorted(train_words_counter.items(), key=lambda kv: kv[1])
 train_words_count = len(train_words_counter)
 print("Total number of distinct words of train set: ", train_words_count)
+#----------------------------------
+
+
+
+# Compute max number of words of sentences of train set
+# Max_length is used for pad_sequences (we don't want to 'cut' any sentence, we keep all sentences with all their words)
+#----------------------------------
+sentence_list = [[s for s in list.split()] for list in X_train] #convert to list of lists of words
+max_length = len(max(sentence_list, key=len)) # find the max length of list
+print("Max length: ", max_length)
 #----------------------------------
 
 
@@ -114,9 +122,6 @@ tokenizer.fit_on_texts(X_train)
 X_train = tokenizer.texts_to_sequences(X_train)
 X_test = tokenizer.texts_to_sequences(X_test)
 
-phrase_len = data['text_preprocessed'].apply(lambda p: len(p.split(' '))) # compute the length of each phrase of each tweet
-max_length = phrase_len.max() # find the max length
-print("Max length: ", max_length)
 
 # Convert to a sequence. Used to ensure that all phrases are the same length.
 # Sequences that are shorter than maxlen are padded with value (0 by default)
