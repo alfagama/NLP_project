@@ -1,19 +1,19 @@
+import keras
 import pymongo
 import pandas as pd
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.layers import Dense, Embedding, LSTM, SpatialDropout1D, Bidirectional
+from keras.layers import Dense, Embedding, LSTM, SpatialDropout1D
 from keras.models import Sequential
-from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
-from keras.callbacks import ModelCheckpoint
 from keras.metrics import Precision, Recall
+from sklearn.model_selection import train_test_split
+from keras.callbacks import ModelCheckpoint
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 from collections import Counter
 import pickle
 from sklearn import metrics
-
 
 
 COLLECTIONAME = 'sentiment140'
@@ -37,7 +37,7 @@ pd.set_option('display.max_rows', None)
 #Create the dataframe
 #----------------------------------
 tweets = collection.find({}, {'text_preprocessed':1, 'label':1 , '_id':0}) #get only 'text_preprocessed' and 'label' from all records
-data = pd.DataFrame(list(tweets))
+data = pd.DataFrame(list(tweets)).head(20)
 data = shuffle(data)
 #print(data.head(997))
 #----------------------------------
@@ -64,7 +64,7 @@ print(X_test.shape, Y_test.shape)
 #----------------------------------
 # When working with categorical data, we don’t want to leave it as integers because the model will interpreted the samples
 # with a higher number as having more significance. to_categorical is a quick way of encoding the data.
-#[0. 1.] -> positive -> 4 (or 1)
+#[0. 1.] -> positive -> 4
 #[1. 0.] -> negative -> 0
 Y_test_classes_for_evaluation = Y_test.astype(int)
 Y_train = to_categorical(Y_train, num_classes=2)
@@ -73,7 +73,7 @@ Y_test = to_categorical(Y_test, num_classes=2)
 
 
 
-# Count total number of distinct words
+# Count total number of distinct words of train set
 #----------------------------------
 train_words_counter = Counter(word for sentence in list(X_train) for word in sentence.split())
 #train_words_count = sorted(train_words_counter.items(), key=lambda kv: kv[1])
@@ -109,7 +109,7 @@ num_of_words = round(train_words_count/10)
 print("Num_words: ", num_of_words)
 
 #The words not included in the vocabulary are replaced by <UKN>
-tokenizer = Tokenizer(num_words= num_of_words, split=' ', oov_token="<UKN>")
+tokenizer = Tokenizer(num_words=num_of_words, split=' ', oov_token="<UKN>")
 tokenizer.fit_on_texts(X_train)
 
 #print all words
@@ -134,13 +134,19 @@ X_test = pad_sequences(X_test, maxlen=max_length)
 # LSTM model
 #----------------------------------
 input_dim = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (index zero)
+#print(len(tokenizer.word_index))
+#print(tokenizer.word_docs)
+
+embed_dim = 20
+lstm_out = 50
 
 model = Sequential()
-model.add(Embedding(input_dim=input_dim, output_dim=40, input_length = X_train.shape[1]))
-model.add(SpatialDropout1D(0.6))
-model.add(Bidirectional(LSTM(50, dropout=0.6, recurrent_dropout=0.6)))
+model.add(Embedding(input_dim=input_dim, output_dim=embed_dim, input_length=X_train.shape[1]))
+model.add(SpatialDropout1D(0.4))
+model.add(LSTM(lstm_out, dropout=0.6, recurrent_dropout=0.6))
+model.add(Dense(30, activation='sigmoid')) #sigmoid for binary classification, softmax for multiclass classifictaion
 model.add(Dense(2, activation='sigmoid'))
-model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy', Precision(), Recall()])
+model.compile(loss = 'binary_crossentropy', optimizer='Adam', metrics=['accuracy', Precision(), Recall()]) #binary_crossentropy for binary classification, categorical_crossentropy for multiclass
 print(model.summary())
 #----------------------------------
 
@@ -149,9 +155,10 @@ print(model.summary())
 # Fit model
 #----------------------------------
 batch_size = 32
-checkpoint1 = ModelCheckpoint("weights/BiLSTM_best_model1.hdf5", monitor='val_accuracy', verbose=1, save_best_only=True, mode='auto', period=1, save_weights_only=False)
-history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size)
+checkpoint1 = ModelCheckpoint("weights/LSTM_best_model1.hdf5", monitor='val_accuracy', verbose=1, save_best_only=True, mode='auto', period=1,save_weights_only=False)
+history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size) #validation_data=(X_test, Y_test),
 #----------------------------------
+
 
 
 # Evaluate with Keras
@@ -189,10 +196,10 @@ print(model.predict(b))'''
 
 
 
-# Save model
+# Save LSTM model
 #----------------------------------
-print("Saving model to disk")
-model.save('models/BiLSTM_model.h5')
+print("Saving LSTM model to disk")
+model.save('models/LSTM_model.h5')
 #----------------------------------
 
 
@@ -200,7 +207,7 @@ model.save('models/BiLSTM_model.h5')
 # Save tokenizer
 #----------------------------------
 print("Saving tokenizer to disk")
-with open('models/BiLSTM_tokenizer.pickle', 'wb') as handle:
+with open('models/LSTM_tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 #----------------------------------
 
@@ -215,7 +222,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig("plots/BiLSTM_accuracy.png")
+plt.savefig("plots/LSTM_accuracy.png")
 plt.show()
 
 
@@ -227,6 +234,10 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig("plots/BiLSTM_loss.png")
+plt.savefig("plots/LSTM_loss.png")
 plt.show()
 #----------------------------------
+
+
+
+
