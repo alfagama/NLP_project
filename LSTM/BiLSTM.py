@@ -15,8 +15,7 @@ import pickle
 from sklearn import metrics
 
 
-
-COLLECTIONAME = 'sentiment140'
+COLLECTIONAME = 'sentiment140_md'
 
 
 #MongoDB
@@ -137,8 +136,8 @@ input_dim = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (ind
 
 model = Sequential()
 model.add(Embedding(input_dim=input_dim, output_dim=40, input_length = X_train.shape[1]))
-model.add(SpatialDropout1D(0.6))
-model.add(Bidirectional(LSTM(50, dropout=0.6, recurrent_dropout=0.6)))
+model.add(SpatialDropout1D(0.4))
+model.add(Bidirectional(LSTM(50, dropout=0.5, recurrent_dropout=0.5)))
 model.add(Dense(2, activation='sigmoid'))
 model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy', Precision(), Recall()])
 print(model.summary())
