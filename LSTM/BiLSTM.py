@@ -151,7 +151,7 @@ history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=
 
 # Evaluate with Keras
 #----------------------------------
-loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=1, batch_size=batch_size)
+loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
 #print(model.metrics_names)
 print("Evaluation on test data using Keras metrics:")
 print("Loss: %.6f" % (loss))
@@ -164,7 +164,7 @@ print("Recall: %.6f" % (recall))
 
 #Evaluation with Sklearn
 #----------------------------------
-y_pred = model.predict_classes(X_test, verbose=2)
+y_pred = model.predict_classes(X_test, verbose=0)
 
 print("\nEvaluation on test data using Sklearn metrics:")
 print("Accuracy: %.6f" % metrics.accuracy_score(Y_test_classes_for_evaluation, y_pred))
