@@ -15,7 +15,7 @@ import pickle
 from sklearn import metrics
 
 
-COLLECTIONAME = 'sentiment140_md'
+COLLECTIONAME = 'sentiment140'
 
 
 #MongoDB
@@ -137,9 +137,10 @@ input_dim = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (ind
 model = Sequential()
 model.add(Embedding(input_dim=input_dim, output_dim=40, input_length = X_train.shape[1]))
 model.add(SpatialDropout1D(0.4))
-model.add(Bidirectional(LSTM(50, dropout=0.5, recurrent_dropout=0.5)))
-model.add(Dense(2, activation='sigmoid'))
-model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy', Precision(), Recall()])
+model.add(Bidirectional(LSTM(30, dropout=0.5, recurrent_dropout=0.5)))
+#model.add(Dense(30, activation='sigmoid'))
+model.add(Dense(2, activation='softmax'))
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy', Precision(), Recall()])
 print(model.summary())
 #----------------------------------
 
@@ -149,7 +150,7 @@ print(model.summary())
 #----------------------------------
 batch_size = 32
 checkpoint1 = ModelCheckpoint("weights/BiLSTM_best_model1.hdf5", monitor='val_accuracy', verbose=1, save_best_only=True, mode='auto', period=1, save_weights_only=False)
-history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size)
+history = model.fit(X_train, Y_train, epochs=10, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size)
 #----------------------------------
 
 
