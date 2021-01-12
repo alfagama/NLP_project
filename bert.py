@@ -93,15 +93,18 @@ DATA_COLUMN = 'DATA_COLUMN'
 LABEL_COLUMN = 'LABEL_COLUMN'
 print("convert_data_to_examples..")
 train_InputExamples = convert_data_to_examples(train, DATA_COLUMN, LABEL_COLUMN)
+
 print("convert_examples_to_tf_dataset..")
 train_data = convert_examples_to_tf_dataset(list(train_InputExamples), tokenizer)
 train_data = train_data.shuffle(100).batch(32).repeat(2)
+
 print("compile..")
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5, 
                                                  epsilon=1e-08, 
                                                  clipnorm=1.0),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy('accuracy')])
+
 print("fit..")
 model.fit(train_data,
           epochs=2,
@@ -120,9 +123,6 @@ labels = ['0', '1']
 label = tf.argmax(tf_predictions, axis=1)
 label = label.numpy()
 
-# print(dataframe_to_predict)
-# print(dataframe_to_predict_labels)
-# print(label)
 predictions = []
 for i in range(len(dataframe_to_predict)):
     predictions.append(labels[label[i]])
