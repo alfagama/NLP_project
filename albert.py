@@ -67,26 +67,32 @@ t = text.Transformer(MODEL_NAME,
                      maxlen=max_length,
                      class_names=label_list)
 
-print("creating val set")
 x_t, x_val, y_t, y_val = train_test_split(x_train,
                                           y_train,
                                           test_size=0.1,
                                           random_state=11)
+
 trn = t.preprocess_train(x_t.to_numpy(), y_t.to_numpy())
 val = t.preprocess_test(x_val.to_numpy(), y_val.to_numpy())
+
 model = t.get_classifier()
+
 tbCallBack = keras.callbacks.TensorBoard(log_dir=logdir,
                                          write_graph=True,
                                          write_images=True)
+
 learner = ktrain.get_learner(model,
                              train_data=trn,
                              val_data=val,
                              batch_size=6)
+
 learner.fit_onecycle(3e-5,
                      int(num_of_epochs),
                      checkpoint_folder=checkpoint_path,
                      callbacks=[tbCallBack])
+
 model.summary()
+
 print("--- %s seconds ---" % (time.time() - start_time))
 predictor = ktrain.get_predictor(learner.model, preproc=t)
 predictions = predictor.predict(x_test)
