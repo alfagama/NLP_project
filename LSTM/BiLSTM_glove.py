@@ -1,4 +1,4 @@
-﻿import keras
+import keras
 import tensorflow
 import pymongo
 import pandas as pd
@@ -148,7 +148,7 @@ with open('data/glove.6B.50d.txt', encoding="utf8") as f:
         coefs = np.asarray(values[1:], dtype='float32')
         embeddings_index[word] = coefs
 
-EMBEDDING_DIM = 50
+EMBEDDING_DIM = 100
 embedding_matrix = np.zeros((vocab_size, EMBEDDING_DIM))
 for word, i in tokenizer.word_index.items():
     embedding_vector = embeddings_index.get(word)
