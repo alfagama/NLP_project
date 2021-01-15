@@ -16,7 +16,7 @@ import pickle
 from sklearn import metrics
 
 
-COLLECTIONAME = 'sentiment140'
+COLLECTIONAME = 'sentiment140_md'
 
 
 #MongoDB
@@ -30,14 +30,14 @@ collection = db[COLLECTIONAME]
 
 
 pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
+#pd.set_option('display.max_rows', None)
 
 
 
 #Create the dataframe
 #----------------------------------
 tweets = collection.find({}, {'text_preprocessed':1, 'label':1 , '_id':0}) #get only 'text_preprocessed' and 'label' from all records
-data = pd.DataFrame(list(tweets)).head(20)
+data = pd.DataFrame(list(tweets))
 data = shuffle(data)
 #print(data.head(997))
 #----------------------------------
@@ -47,8 +47,8 @@ data = shuffle(data)
 # Convert positive from 4 to 1
 #----------------------------------
 data['label'] = data['label'].replace('4','1') #replace 4 (meaning positive) to 1
+data['label'] = data['label'].replace(0,'0')
 #----------------------------------
-
 
 
 # Train test split
@@ -66,9 +66,9 @@ print(X_test.shape, Y_test.shape)
 # with a higher number as having more significance. to_categorical is a quick way of encoding the data.
 #[0. 1.] -> positive -> 4
 #[1. 0.] -> negative -> 0
-Y_test_classes_for_evaluation = Y_test.astype(int)
-Y_train = to_categorical(Y_train, num_classes=2)
-Y_test = to_categorical(Y_test, num_classes=2)
+#Y_test_classes_for_evaluation = Y_test.astype(int)
+#Y_train = to_categorical(Y_train, num_classes=2)
+#Y_test = to_categorical(Y_test, num_classes=2)
 #----------------------------------
 
 
@@ -138,15 +138,16 @@ input_dim = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (ind
 #print(tokenizer.word_docs)
 
 embed_dim = 20
-lstm_out = 50
+
 
 model = Sequential()
 model.add(Embedding(input_dim=input_dim, output_dim=embed_dim, input_length=X_train.shape[1]))
 model.add(SpatialDropout1D(0.4))
-model.add(LSTM(lstm_out, dropout=0.6, recurrent_dropout=0.6))
+model.add(LSTM(30, return_sequences=True, recurrent_dropout=0.5))
+model.add(LSTM(30, dropout=0.5, recurrent_dropout=0.5))
 model.add(Dense(30, activation='sigmoid')) #sigmoid for binary classification, softmax for multiclass classifictaion
-model.add(Dense(2, activation='sigmoid'))
-model.compile(loss = 'binary_crossentropy', optimizer='Adam', metrics=['accuracy', Precision(), Recall()]) #binary_crossentropy for binary classification, categorical_crossentropy for multiclass
+model.add(Dense(1, activation='sigmoid'))
+model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy', Precision(), Recall()]) #binary_crossentropy for binary classification, categorical_crossentropy for multiclass
 print(model.summary())
 #----------------------------------
 
@@ -154,9 +155,9 @@ print(model.summary())
 
 # Fit model
 #----------------------------------
-batch_size = 32
+batch_size = 128
 checkpoint1 = ModelCheckpoint("weights/LSTM_best_model1.hdf5", monitor='val_accuracy', verbose=1, save_best_only=True, mode='auto', period=1,save_weights_only=False)
-history = model.fit(X_train, Y_train, epochs=8, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size) #validation_data=(X_test, Y_test),
+history = model.fit(X_train, Y_train, epochs=5, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size) #validation_data=(X_test, Y_test),
 #----------------------------------
 
 
@@ -176,13 +177,15 @@ print("Recall: %.6f" % (recall))
 
 #Evaluation with Sklearn
 #----------------------------------
-y_pred = model.predict_classes(X_test, verbose=0)
+y_pred = model.predict(X_test, verbose=0)
+y_pred_str = [('1' if i >= 0.500000000 else '0') for i in y_pred]
+
 
 print("\nEvaluation on test data using Sklearn metrics:")
-print("Accuracy: %.6f" % metrics.accuracy_score(Y_test_classes_for_evaluation, y_pred))
-print("Precision: %.6f" % metrics.precision_score(Y_test_classes_for_evaluation, y_pred, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
-print("Recall: %.6f" % metrics.recall_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
-print("F1: %.6f \n" % metrics.f1_score(Y_test_classes_for_evaluation, y_pred, average='macro'))
+print("Accuracy: %.6f" % metrics.accuracy_score(Y_test, y_pred_str))
+print("Precision: %.6f" % metrics.precision_score(Y_test, y_pred_str, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
+print("Recall: %.6f" % metrics.recall_score(Y_test, y_pred_str, average='macro'))
+print("F1: %.6f \n" % metrics.f1_score(Y_test, y_pred_str, average='macro'))
 #----------------------------------
 
 
@@ -194,12 +197,12 @@ b = pad_sequences(b, maxlen=max_length)
 print(model.predict(b))'''
 #----------------------------------
 
-
+folder='LSTM2'
 
 # Save LSTM model
 #----------------------------------
 print("Saving LSTM model to disk")
-model.save('models/LSTM_model.h5')
+model.save('models/'+ folder +'LSTM_model.h5')
 #----------------------------------
 
 
@@ -207,7 +210,7 @@ model.save('models/LSTM_model.h5')
 # Save tokenizer
 #----------------------------------
 print("Saving tokenizer to disk")
-with open('models/LSTM_tokenizer.pickle', 'wb') as handle:
+with open('models/'+ folder +'LSTM_tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 #----------------------------------
 
@@ -222,7 +225,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc='upper left')
-plt.savefig("plots/LSTM_accuracy.png")
+plt.savefig('plots/'+ folder +'LSTM_accuracy.png')
 plt.show()
 
 
@@ -234,7 +237,7 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc='upper left')
-plt.savefig("plots/LSTM_loss.png")
+plt.savefig('plots/'+ folder +'LSTM_loss.png')
 plt.show()
 #----------------------------------
 
