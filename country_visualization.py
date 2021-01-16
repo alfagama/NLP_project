@@ -4,6 +4,50 @@ import plotly.express as px
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from pymongo import MongoClient
+
+
+def remove_values_from_list(the_list, val):
+   return [value for value in the_list if value != val]
+
+#Connection to MongoDB
+#####################################################################
+connection = MongoClient("mongodb://localhost:27017/")
+db = connection.TwitterDB
+
+collections = db.collection_names()
+
+#####################################################################
+#Get all countries
+
+all_countries = []
+for collection in collections:
+    tweets = db[collection].find().batch_size(10)
+    if collection == 'copiedCollection':
+        for tweet in tweets:
+            try:
+                location = tweet["location"]
+                all_countries.append(str(location))
+            except KeyError:
+                counter = counter + 1
+                print('missing field: ', tweet["id"])
+
+print('Counter is ', counter)
+
+all_countries = remove_values_from_list(all_countries, 'None')
+unique_tweets_frequency = Counter(all_countries)
+print(unique_tweets_frequency)
+
+#Creating the COVID-19 DataFrame
+df = []
+dict_Countries_Count = {}
+listOfContinents = []
+for index, value in enumerate(Counter(all_countries)):
+    df.append([value, Counter(all_countries)[value]])
+    dict_Countries_Count[value] = Counter(all_countries)[value]
+    #listOfContinents.append(get_continent(value))
+df_countries_counts = pd.DataFrame(df, columns = ['country', 'counts'])
+
 
 #   ###############################################
 #   insert here df with 2 columns [country][counts]
@@ -77,9 +121,9 @@ colorscale = ["#00308F", "#0643A5", "#126AD2", "#1E90FF"]
 #   plot 2 - the one Alexia liked more
 #   ###############################################
 fig = go.Figure(data=go.Choropleth(
-    locations=df_merged['iso_alpha'],
-    z=df_merged['counts'],
-    text=df_merged['country'],
+    locations=df_countries_counts['iso_alpha'],
+    z=df_countries_counts['counts'],
+    text=df_countries_counts['country'],
     # colorscale='Blues',
     colorscale=colorscale,
     autocolorscale=False,
