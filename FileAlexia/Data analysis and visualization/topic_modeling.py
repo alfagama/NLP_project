@@ -7,7 +7,7 @@ import pyLDAvis.gensim  # don't skip this
 
 
 collection = db['covid']
-NUM_TOPICS = 8
+NUM_TOPICS = 6
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     # Get a list of all tweet texts from MongoDB
     #----------------------------------
     print('\nLoading from MongoDB..')
-    cursor = collection.find({"tweet_date" : "2020-12-21"})
+    cursor = collection.find({"tweet_date":"2020-12-08"})
 
     data = []
     for doc in cursor:
@@ -82,7 +82,7 @@ def main():
 
     # output
     for i in range(NUM_TOPICS):
-        print(f"------ Topic {id} ------")
+        print(f"\n------ Topic {i} ------")
         print(topic_words[i])
     # ----------------------------------
 
@@ -113,6 +113,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 
