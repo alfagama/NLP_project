@@ -5,7 +5,7 @@ from keras.preprocessing.sequence import pad_sequences
 from pymongo import MongoClient
 
 
-MAX_LENGTH = 20
+MAX_LENGTH = 34
 EMBEDDING_DIM = 100
 folder = 'BiLSTM-glove-binary-trainableTrue-noPrecision'
 
