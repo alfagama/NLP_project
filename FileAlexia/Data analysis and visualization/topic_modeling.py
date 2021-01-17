@@ -1,10 +1,4 @@
-from sklearn.feature_extraction.text import CountVectorizer
-import numpy as np
 from FileAlexia.mongodb_scripts.mongo_db import *
-import seaborn as sns
-from sklearn.decomposition import LatentDirichletAllocation as LDA
-import warnings
-import matplotlib.pyplot as plt
 import gensim
 import re
 from gensim.models import CoherenceModel
@@ -58,7 +52,6 @@ def main():
     # ----------------------------------
 
 
-
     # Create Topics
     # ----------------------------------
     print('\nTopics:')
@@ -77,6 +70,7 @@ def main():
     for i in LDA_model.print_topics():
         for j in i: print(j)
     # ----------------------------------
+
 
     # Get most frequent words of each topic
     # ----------------------------------
@@ -108,7 +102,6 @@ def main():
     # ----------------------------------
 
 
-
     # Creating Topic Distance Visualization
     # ----------------------------------
     print('\nCreating visualization..')
@@ -118,8 +111,8 @@ def main():
 
 
 
-
-
 if __name__ == "__main__":
     main()
+
+
 
