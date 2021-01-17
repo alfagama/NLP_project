@@ -74,7 +74,7 @@ for tweet in tweets:
         },
         {
             "$set": {
-                "BiLSTM_label": str(label),
+                "BiLSTM_label": label_str,
             }
         }
     )
