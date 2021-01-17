@@ -19,7 +19,7 @@ collection = db['temp2']
 
 
 
-# load LSTM model
+# Load LSTM model
 #----------------------------------
 loaded_model = load_model('models/'+ folder +'/BiLSTM_glove_model.h5')
 loaded_model.summary()
@@ -27,7 +27,7 @@ loaded_model.summary()
 
 
 
-# load tokenizer
+# Load tokenizer
 #----------------------------------
 with open('models/'+ folder +'/BiLSTM_glove_tokenizer.pickle', 'rb') as handle:
     tokenizer = pickle.load(handle)
