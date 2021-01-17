@@ -4,93 +4,122 @@ from FileAlexia.mongodb_scripts.mongo_db import *
 import seaborn as sns
 from sklearn.decomposition import LatentDirichletAllocation as LDA
 import warnings
-#from pyLDAvis import sklearn as sklearn_lda
+import matplotlib.pyplot as plt
+import gensim
+import re
 from gensim.models import CoherenceModel
-
-
-
-warnings.simplefilter("ignore", DeprecationWarning)
-
-
-sns.set_style('whitegrid')
-#% matplotlib inline  # Helper function
-
-
-# Helper function
-def print_topics(model, count_vectorizer, n_top_words):
-    words = count_vectorizer.get_feature_names()
-    for topic_idx, topic in enumerate(model.components_):
-        print("\nTopic #%d:" % topic_idx)
-        print(" ".join([words[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-
-def plot_10_most_common_words(count_data, count_vectorizer):
-    import matplotlib.pyplot as plt
-    words = count_vectorizer.get_feature_names()
-    total_counts = np.zeros(len(words))
-    for t in count_data:
-        total_counts += t.toarray()[0]
-
-    count_dict = (zip(words, total_counts))
-    count_dict = sorted(count_dict, key=lambda x: x[1], reverse=True)[0:10]
-    words = [w[0] for w in count_dict]
-    counts = [w[1] for w in count_dict]
-    x_pos = np.arange(len(words))
-
-    plt.figure(2, figsize=(15, 15 / 1.6180))
-    plt.subplot(title='10 most common words')
-    sns.set_context("notebook", font_scale=1.25, rc={"lines.linewidth": 2.5})
-    sns.barplot(x_pos, counts, palette='husl')
-    plt.xticks(x_pos, words, rotation=90)
-    plt.xlabel('words')
-    plt.ylabel('counts')
-    plt.show()  # Initialise the count vectorizer with the English stop words
+import pyLDAvis
+import pyLDAvis.gensim  # don't skip this
 
 
 collection = db['covid']
-#tweet_texts = collection.distinct("text_preprocessed")
-cursor = collection.aggregate([{"$limit": 1000},
-                               {"$group" : {"_id": "$id", "text" : {"$push": "$text_preprocessed"}}}])
+NUM_TOPICS = 8
 
 
-alltext = []
-for doc in cursor:
-    #print(doc["text"])
-    alltext.append(doc["text"])
-txtlist = [item for items in alltext for item in items]
+def main():
+
+    # Get a list of all tweet texts from MongoDB
+    #----------------------------------
+    print('\nLoading from MongoDB..')
+    cursor = collection.find({"tweet_date" : "2020-12-21"})
+
+    data = []
+    for doc in cursor:
+        data.append(doc["text_preprocessed"])
+        #print(doc["text_preprocessed"])
+
+    #print(text_data)
+    #----------------------------------
 
 
-count_vectorizer = CountVectorizer(stop_words='english')
+    # Create a dictionary
+    # ----------------------------------
+    print('\nCreating dictionary..')
+    data = [d.split() for d in data]
+    dictionary = gensim.corpora.Dictionary(data)
+    #print(len(id2word))
 
-# Fit and transform the processed titles
-count_data = count_vectorizer.fit_transform(txtlist)
-
-# Visualise the 10 most common words
-#plot_10_most_common_words(count_data, count_vectorizer)
-
-
-# Tweak the two parameters below
-number_topics = 10
-number_words = 10
-
-# Create and fit the LDA model
-lda = LDA(n_components=number_topics, n_jobs=-1)
-lda.fit(count_data)
-
-# Print the topics found by the LDA model
-print("Topics found via LDA:")
-print_topics(lda, count_vectorizer, number_words)
+    dictionary.filter_extremes(no_below=2, no_above=.99) # Filtering Extremes
+    #print(len(id2word))
+    # ----------------------------------
 
 
+    # Creating a corpus object
+    # ----------------------------------
+    print('\nCreating corpus..')
+    corpus = [dictionary.doc2bow(d) for d in data]
+    # ----------------------------------
 
-'''doc_topic = lda.transform(lda)
 
-for n in range(doc_topic.shape[0]):
-    topic_most_pr = doc_topic[n].argmax()
-    print("doc: {} topic: {}\n".format(n,topic_most_pr))'''
+    # LDA model
+    # ----------------------------------
+    print('\nBuilding LDA model..')
+    LDA_model = gensim.models.LdaModel(corpus=corpus, num_topics=NUM_TOPICS, id2word=dictionary, passes=5)  # Instantiating a Base LDA model
+    # ----------------------------------
 
 
-# Compute Coherence Score
-'''coherence_model_lda = CoherenceModel(model=lda, texts=txtlist, coherence='c_v')
-coherence_lda = coherence_model_lda.get_coherence()
-print('\nCoherence Score: ', coherence_lda)'''
+
+    # Create Topics
+    # ----------------------------------
+    print('\nTopics:')
+    words = [re.findall(r'"([^"]*)"', t[1]) for t in LDA_model.print_topics()]   # Filtering for words
+    topics = [' '.join(t[0:10]) for t in words]
+
+    for id, t in enumerate(topics): # Getting the topics
+        print(f"------ Topic {id} ------")
+        print(t, end="\n\n")
+    # ----------------------------------
+
+
+    # Print topics with propabilities
+    # ----------------------------------
+    print('\nTopics with propabilities:')
+    for i in LDA_model.print_topics():
+        for j in i: print(j)
+    # ----------------------------------
+
+    # Get most frequent words of each topic
+    # ----------------------------------
+    print('\nMost frequent words by topic:')
+    topic_words = []
+    for i in range(NUM_TOPICS):
+        tt = LDA_model.get_topic_terms(i, 20)
+        topic_words.append([dictionary[pair[0]] for pair in tt])
+
+    # output
+    for i in range(NUM_TOPICS):
+        print(f"------ Topic {id} ------")
+        print(topic_words[i])
+    # ----------------------------------
+
+
+    # Compute Coherence and Perplexity
+    # ----------------------------------
+    #Compute Perplexity, a measure of how good the model is. lower the better
+    print('\nComputing Coherence and Perplexity..')
+    base_perplexity = LDA_model.log_perplexity(corpus)
+    print('\nPerplexity: ', base_perplexity)
+
+    # Compute Coherence Score
+    coherence_model = CoherenceModel(model=LDA_model, texts=data,
+                                   dictionary=dictionary, coherence='c_v')
+    coherence_lda_model_base = coherence_model.get_coherence()
+    print('\nCoherence Score: ', coherence_lda_model_base)
+    # ----------------------------------
+
+
+
+    # Creating Topic Distance Visualization
+    # ----------------------------------
+    print('\nCreating visualization..')
+    visualisation = pyLDAvis.gensim.prepare(LDA_model, corpus, dictionary)
+    pyLDAvis.save_html(visualisation, 'LDA_Visualization.html')
+    # ----------------------------------
+
+
+
+
+
+if __name__ == "__main__":
+    main()
+
