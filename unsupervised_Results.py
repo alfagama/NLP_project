@@ -2,11 +2,11 @@ from pymongo import MongoClient
 import pandas as pd
 
 def findLabelPosition(label):
-    if label == '1' or label == 1:
+    if label == 'Positive':
         x = 0
-    elif label == '-1' or label == 0:
+    elif label == 'Negative':
         x = 1
-    elif label == '0':
+    elif label == 'Neutral':
         x = 2
     return x
 
