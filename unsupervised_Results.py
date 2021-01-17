@@ -17,7 +17,6 @@ def createFinalDF(dataframe):
 
     for i, j in dataframe.iterrows():
         print(j[1])
-        # printing the third element of the column
         i = 0
         for x in j[1]:
             if i == 0:
