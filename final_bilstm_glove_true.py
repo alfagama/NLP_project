@@ -199,35 +199,6 @@ history = model.fit(X_train, Y_train, epochs=10, validation_split=0.2, callbacks
 
 
 
-# Evaluate with Keras
-#----------------------------------
-# loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
-# #print(model.metrics_names)
-# print("Evaluation on test data using Keras metrics:")
-# print("Loss: %.6f" % (loss))
-# print("Accuracy: %.6f" % (accuracy))
-# print("Precision: %.6f" % (precision))
-# print("Recall: %.6f" % (recall))
-#----------------------------------
-#----------------------------------
-
-
-
-#Evaluation with Sklearn
-#----------------------------------
-# y_pred = model.predict_classes(X_test, verbose=0)
-y_pred = model.predict(X_test, verbose=0)
-y_pred_str = [(1 if i >= 0.500000000 else 0) for i in y_pred]
-
-# print("\nEvaluation on test data using Sklearn metrics:")
-# print("Accuracy: %.6f" % metrics.accuracy_score(Y_test, y_pred_str))
-# print("Precision: %.6f" % metrics.precision_score(Y_test, y_pred_str, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
-# print("Recall: %.6f" % metrics.recall_score(Y_test, y_pred_str, average='macro'))
-# print("F1: %.6f \n" % metrics.f1_score(Y_test, y_pred_str, average='macro'))
-#----------------------------------
-data_test['label'] = y_pred_str
-
-
 # Predict label
 #----------------------------------
 '''b = tokenizer.texts_to_sequences(['bio terrorist endanger public lock aid air bear would tolerate mass gather claim aid hoax'])
@@ -252,6 +223,42 @@ with open('models/BiLSTM_glove_tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 #----------------------------------
 
+# Serialize model to JSON
+#----------------------------------
+print("Saving JSON to disk")
+model_json = model.to_json()
+with open('models/BiLSTM_glove_model_JSON.pickle', "w") as json_file:
+    json_file.write(model_json)
+#----------------------------------
+
+
+#Evaluation with Sklearn
+#----------------------------------
+# y_pred = model.predict_classes(X_test, verbose=0)
+# y_pred = model.predict(X_test, verbose=0)
+# y_pred_str = [(1 if i >= 0.500000000 else 0) for i in y_pred]
+#
+# # print("\nEvaluation on test data using Sklearn metrics:")
+# # print("Accuracy: %.6f" % metrics.accuracy_score(Y_test, y_pred_str))
+# # print("Precision: %.6f" % metrics.precision_score(Y_test, y_pred_str, average='macro'))#, labels=np.unique(y_pred)))#, labels=np.unique(y_predicted)
+# # print("Recall: %.6f" % metrics.recall_score(Y_test, y_pred_str, average='macro'))
+# # print("F1: %.6f \n" % metrics.f1_score(Y_test, y_pred_str, average='macro'))
+# #----------------------------------
+# data_test['label'] = y_pred_str
+
+
+
+# Evaluate with Keras
+#----------------------------------
+# loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
+# #print(model.metrics_names)
+# print("Evaluation on test data using Keras metrics:")
+# print("Loss: %.6f" % (loss))
+# print("Accuracy: %.6f" % (accuracy))
+# print("Precision: %.6f" % (precision))
+# print("Recall: %.6f" % (recall))
+#----------------------------------
+#----------------------------------
 
 
 # Plot accuracy and loss
