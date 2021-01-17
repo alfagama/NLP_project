@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from pymongo import MongoClient
+from collections import Counter
 
 
 def remove_values_from_list(the_list, val):
