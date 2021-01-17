@@ -11,7 +11,7 @@ from keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
 from keras.callbacks import ModelCheckpoint
-from keras.metrics import Precision, Recall
+#from keras.metrics import Precision, Recall
 import joblib
 from numpy import zeros
 import matplotlib.pyplot as plt
@@ -141,7 +141,7 @@ vocab_size = len(tokenizer.word_index) + 1 #+ 1 because of reserving padding (in
 # Glove
 #----------------------------------
 embeddings_index = dict()
-with open('data/glove.6B.50d.txt', encoding="utf8") as f:
+with open('data/glove.twitter.27B.100d.txt', encoding="utf8") as f:
     for line in f:
         values = line.split()
         word = values[0]
@@ -170,7 +170,7 @@ model.add(Dense(2, activation='softmax'))
 
 
 optimizer = Adam(lr=0.01, decay=0.001)
-model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy', Precision(), Recall()]) #binary_crossentropy for binary classification, categorical_crossentropy for multiclass
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy']) #, Precision(), Recall() #binary_crossentropy for binary classification, categorical_crossentropy for multiclass
 print(model.summary())
 #----------------------------------
 
@@ -179,20 +179,20 @@ print(model.summary())
 #----------------------------------
 batch_size = 32
 checkpoint1 = ModelCheckpoint("weights/BiLSTM_glove_best_model1.hdf5", monitor='val_accuracy', verbose=1, save_best_only=True, mode='auto', period=1,save_weights_only=False)
-history = model.fit(X_train, Y_train, epochs=6, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size) #validation_data=(X_test, Y_test),
+history = model.fit(X_train, Y_train, epochs=10, validation_split=0.2, callbacks=[checkpoint1], batch_size=batch_size) #validation_data=(X_test, Y_test),
 #----------------------------------
 
 
 
 # Evaluate with Keras
 #----------------------------------
-loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
+'''loss, accuracy, precision, recall = model.evaluate(X_test, Y_test, verbose=0, batch_size=batch_size)
 #print(model.metrics_names)
 print("Evaluation on test data using Keras metrics:")
 print("Loss: %.6f" % (loss))
 print("Accuracy: %.6f" % (accuracy))
 print("Precision: %.6f" % (precision))
-print("Recall: %.6f" % (recall))
+print("Recall: %.6f" % (recall))'''
 #----------------------------------
 
 
@@ -218,11 +218,13 @@ print(model.predict(b))'''
 #----------------------------------
 
 
+folder = 'BiLSTM-glove-binary-trainableTrue-noPrecision'
+
 
 # Save LSTM model
 #----------------------------------
 print("Saving LSTM model to disk")
-model.save('models/BiLSTM_glove_model.h5')
+model.save('models/'+ folder +'/BiLSTM_glove_model.h5')
 #----------------------------------
 
 
@@ -230,8 +232,18 @@ model.save('models/BiLSTM_glove_model.h5')
 # Save tokenizer
 #----------------------------------
 print("Saving tokenizer to disk")
-with open('models/BiLSTM_glove_tokenizer.pickle', 'wb') as handle:
+with open('models/'+ folder +'/BiLSTM_glove_tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#----------------------------------
+
+
+
+# Serialize model to JSON
+#----------------------------------
+print("Saving JSON to disk")
+model_json = model.to_json()
+with open('models/'+ folder +'/BiLSTM_glove_model_JSON.pickle', "w") as json_file:
+    json_file.write(model_json)
 #----------------------------------
 
 
