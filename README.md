@@ -37,49 +37,65 @@ In more detail the 3 datasets with their respective entries number:
 ```
 .
 └── twitter_sentiment_analysis_based_on_geolocation
-    ├── Dates
-    │   ├── .png
-    │   ├── .png
-    │   ├── Date-Tweet_plot_vaccine.png
-    │   ├── .txt
-    │   ├── .txt
-    │   └── vaccine_dates.txt
-    ├── Locations
-    │   ├── .png
-    │   ├── .png
-    │   └── vaccines_map.png
-    ├── Ngrams
-    │   ├── .txt
-    │   ├── .txt
-    │   ├── bigrams_vaccine__final.txt
-    │   ├── .txt
-    │   ├── .txt
-    │   ├── fourgrams_vaccine_final.txt
-    │   ├── .txt
-    │   ├── .txt
-    │   └── trigrams_vaccine_final.txt
-    ├── TopicModelling
-    │   ├── .txt 
-    │   ├── .txt
-    │   └── vaccine_topics.txt
-    ├── WordClouds
-    │   ├── .png
-    │   ├── .png
-    │   └── vaccine_wordcloud.png
-    ├── Useful_for_mongodb
-    │   ├── duplicates/etc.withdb.py
-    │   ├── .py
-    │   └── .py
+    ├── country_visualization
+    │   ├── country_visualization.py
+    │   ├── country_visualization_CreateMap.py
+    │   └── country_visualization_createDFs.py
+    ├── credentials
+    │   └── credentials.py
+    ├── data_analysis
+    │   ├── create_wordcloud.py
+    │   ├── group_by_country.py
+    │   ├── group_by_date.py
+    │   ├── ngrams.py
+    │   └── topic_modeling.py
+    ├── mongodb_useful
+    │   ├── copydb.py
+    │   ├── deleteColumns.py
+    │   ├── delete_duplicates.py
+    │   ├── find_duplicates.py
+    │   ├── groupDates.py
+    │   ├── mongo_db.py
+    │   └── move_docs_to_another_collection.py
+    ├── outputs
+    │   ├── Dates
+    │   │   ├── Date-Tweet_plot_vaccine.png
+    │   │   └── vaccine_dates.txt
+    │   ├── Locations
+    │   │   └── vaccines_map.png
+    │   ├── Ngrams
+    │   │   ├── bigrams_vaccine__final.txt
+    │   │   ├── fourgrams_vaccine_final.txt
+    │   │   └── trigrams_vaccine_final.txt
+    │   ├── TopicModeling
+    │   │   └── vaccine_topics.txt
+    │   ├── WordClouds
+    │   │   ├── first_review.png
+    |   │   └── vaccine_wordcloud.png
+    ├── preprocessing
+    │   ├── dictionaries.py
+    │   ├── preprocessing.py
+    │   └── tweet_location.py
+    ├── supervised
+    │   ├── CNN
+    │   │   └── CNN.py
+    │   ├── LSTM
+    │   │   ├── plots
+    |   |   |   ├── LSTM_accuracy.png
+    |   |   |   └── LSTM_loss.png
+    │   │   ├── BiLSTM.py
+    │   │   ├── BiLSTM_glove.py
+    │   │   ├── LSTM.py
+    │   │   ├── LSTM_glove.py
+    │   │   └── LoadModelAndPredict.py
+    ├── supervised_that_we_never_ran
+    │   ├── albert.py
+    │   └── bert.py
+    ├── unsupervised
+    │   ├── Vader-TextBlob.py
+    │   ├── unsupervised_Results.py
+    │   └── unsupervised_lexicon_based.py
     ├── README.md
-    ├── country_visualization.py
-    ├── dictionaries.py
-    ├── ngrams.py
-    ├── preprocessing.py
-    ├── unsupervised_lexicon_based.py
-    ├── .py
-    ├── .py
-    ├── .py
-    ├── .py
-    ├── .py
-    └── .py
+    ├── api.py
+    └── tweet_collection.py
 ```
