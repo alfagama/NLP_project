@@ -18,11 +18,11 @@ Utilizing the Twitter API, we aim to gather data based on a variety of hashtags 
 
 In more detail the 3 datasets with their respective entries number:  
 
-| Tables        | Entries       | Cols  |
-| ------------- |:-------------:| -----:|
-| Covid         | 1.002.599     |  122  |
-| Quarantine    | 955.470       |  122  |
-| Vaccine       | 136.088       |  122  |
+| Tables        | Entries       |
+| ------------- |:-------------:|
+| Covid         | 429.019       |
+| Quarantine    | 364.075       | 
+| Vaccine       | 64.200        | 
 
 ## Methodology:
 - Unsupervised Methods : Vader & Textblob
