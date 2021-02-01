@@ -1,6 +1,6 @@
 import tweepy
 import sys
-from FileAlexia.credentials.credentials import *
+from credentials.credentials import *
 
 
 auth = tweepy.AppAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
