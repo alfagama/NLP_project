@@ -1,7 +1,7 @@
 from FileAlexia.api import api
 import tweepy
 import time
-from FileAlexia.mongodb_scripts.mongo_db import *
+from mongodb_useful.mongo_db import *
 
 query = "#coronavirus OR #covid OR #covid19 OR #covid_19"
 CollectionName = 'covid2'
