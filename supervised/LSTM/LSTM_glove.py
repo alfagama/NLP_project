@@ -169,7 +169,6 @@ model.add(LSTM(30, dropout=0.5, recurrent_dropout=0.5))
 model.add(Dense(30, activation='sigmoid'))
 model.add(Dense(1, activation='sigmoid'))
 
-optimizer = Adam(lr=0.01, decay=0.001)
 model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy']) #, Precision(), Recall()
 
 print(model.summary())
