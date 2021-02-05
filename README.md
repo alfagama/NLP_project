@@ -1,6 +1,6 @@
 ## MSc Data & Web Science, Aristotle University of Thessaloniki (AUTH)
 ### Course: Text Mining and Natural Language Processing
-#### Project: *“Analysis of public reactions to COVID-19 related tweets based on geolocation”*
+#### Project: *“Sentiment Analysis of tweets about Covid-19 based on geolocation”*
 ----------------------------------------------------
 **Team Members**:
 1. Georgios Arampatzis
