@@ -81,3 +81,28 @@ for tweet in tweets:
     tweet_index += 1
     print('[Sentiment Update]', tweet['id'], '[' + str(tweet_index) + '/' + str(collection.estimated_document_count()) + ']\n')
 #----------------------------------
+
+# Predict label on our tweets from .csv to .csv
+#----------------------------------
+names = ['text_preprocessed','location','tweet_date']
+df = pd.read_csv(
+    'train/q2.csv',
+    names=names,
+    sep=',',
+    header=1,  # no header, alternative header = header_col
+    index_col=None,  # no index, alternative header = index_row
+    encoding='utf-8',
+    skiprows=1  # how many rows to skip / not include in read_csv
+)
+
+X_test = df['text_preprocessed'].tolist()
+
+b = tokenizer.texts_to_sequences(X_test)
+b = pad_sequences(b, maxlen=MAX_LENGTH)
+
+y_pred = loaded_model.predict(b, verbose=0)
+print(y_pred)
+y_pred_str = [("1" if i >= 0.500000000 else "0") for i in y_pred]
+
+df['label'] = y_pred_str
+df.to_csv('quarantine_with_label.csv')
